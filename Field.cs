@@ -12,17 +12,21 @@ namespace ConsoleApp1
 {
     public class Field
     {
+        public static int unitType;
+        
         const int tickRate = 1000 / 60;
-        public int unitType { get; set; }
+            const int P_38 = 155;
+            const int SPITFIRE = 156;
+            const int J7W_SHINDEN = 157;
+        [DllImport("user32.dll")]
+
+        public static extern short GetKeyState(int keyCode);
         public Field()
         {
 
         }
         public void Play()
         {
-            const int P_38 = 155;
-            const int SPITFIRE = 156;
-            const int J7W_SHINDEN = 157;
 
             GameOver gameOver = new GameOver();
             int lastTick = 0;
@@ -34,7 +38,7 @@ namespace ConsoleApp1
             const int POWER = 44;
             const int ENEMY_BULLET = 46;
             const int PLAYER_EXPLODE = 999;
-
+            
             int pos_X = 15;
             int pos_Y = 35;
             int bullet_X = pos_X;
@@ -52,9 +56,10 @@ namespace ConsoleApp1
             int playerHp = 3;
             int respawnTick = 0;
             int respawnWaitTime = 0;
-            int bulletLimit = 40;
+            int bulletLimit = 30;
             bool isGodMod = false;
-
+            int moveX = 0;
+            int moveY = 0;
             List<Bullet> playerBulletList = new List<Bullet>();
             List<Enemy> enemyList = new List<Enemy>();
             List<Bullet> enemyBulletList = new List<Bullet>();
@@ -337,7 +342,7 @@ namespace ConsoleApp1
 
                                     if (playerBulletList.Count < bulletLimit)
                                     {
-
+                                        
                                         playerBulletList.Add(new Bullet(pos_X, pos_Y - shootCount - shootDelay));
                                         if (powerCount >= 1)
                                         {
@@ -377,6 +382,26 @@ namespace ConsoleApp1
                         }
 
                         var bullet = playerBulletList[i];
+                        if(unitType==SPITFIRE) 
+                        {
+                           if(i%2==0&&bullet.Y%6==0)
+                            {
+                            bullet.X += 1;
+
+                            }
+                           if(i % 2 == 1 && bullet.Y % 6 == 0    ) 
+                            {
+                                bullet.X -= 1;
+
+                            }
+
+
+                        }
+
+                        if(bullet.X<1||bullet.X>38)
+                        {
+                            playerBulletList.RemoveAt(i);
+                        }
                         bullet.Y -= 1;
                         for (int j = enemyList.Count - 1; j >= 0; j--)
                         {
@@ -384,7 +409,16 @@ namespace ConsoleApp1
                             
                             if (bullet.Y == enemy.enemyPos_Y && bullet.X == enemy.enemyPos_X)
                             {
-                                enemy.enemyHp -= 50;
+                                if (unitType == SPITFIRE)
+                                {
+                                    enemy.enemyHp -= 20;
+
+                                }
+                                else
+                                {
+                                    enemy.enemyHp -= 50;
+
+                                }
                                 playerBulletList.RemoveAt(i);
 
                                 if (enemy.enemyHp <= 0)
@@ -414,22 +448,28 @@ namespace ConsoleApp1
                     //Console.WriteLine("BombCount {0}", bombCount);
                     if(unitType==P_38)
                     {
-                    CursorPosition(10, 46);
+                    CursorPosition(0, 46);
                     Console.Write("유닛 타입 : P_38");
 
                     }
                     else if(unitType==SPITFIRE)
                     {
-                        CursorPosition(10,46 );
+                        CursorPosition(0,46 );
                         Console.Write("유닛 타입 : SPITFIRE");
                     }
                     else if(unitType==J7W_SHINDEN)
                     {
-                        CursorPosition(10, 46);
+                        CursorPosition(0, 46);
                         Console.Write("유닛 타입 : J7W_SHINDEN");
                     }
+                    else
+                    {
+                        CursorPosition(0, 46);
 
+                        Console.Write("버그");
+                    }
                     //Thread.Sleep(10);
+                    
 
                     if (Console.KeyAvailable)
                     {
@@ -520,20 +560,20 @@ namespace ConsoleApp1
                                 }
                                 if (isBomb_Explode == true && bombCount > 0)
                                 {
-                                    for (int y = 0; y < pos_Y-1; y++)
+                                    for (int y = 0; y < pos_Y - 1; y++)
                                     {
-                                        if(pos_X>35)
+                                        if (pos_X > 35)
                                         {
 
-                                            for (int x = pos_X - 5; x < pos_X ; x++)
+                                            for (int x = pos_X - 5; x < pos_X; x++)
                                             {
 
                                                 playerBulletList.Add(new Bullet(x, y));
                                             }
                                         }
-                                        else if(pos_X <5)
+                                        else if (pos_X < 5)
                                         {
-                                            for (int x = pos_X -pos_X; x < pos_X + 5; x++)
+                                            for (int x = pos_X - pos_X; x < pos_X + 5; x++)
                                             {
 
                                                 playerBulletList.Add(new Bullet(x, y));
@@ -541,14 +581,14 @@ namespace ConsoleApp1
                                         }
                                         else
                                         {
-                                            for (int x = pos_X - 5; x < pos_X+5; x++)
+                                            for (int x = pos_X - 5; x < pos_X + 5; x++)
                                             {
 
                                                 playerBulletList.Add(new Bullet(x, y));
                                             }
                                         }
 
-                                       
+
                                     }
                                     isBomb_Explode = false;
                                 }
@@ -573,7 +613,7 @@ namespace ConsoleApp1
                                 break;
 
                         }
-                    }
+                    }//키입력
                 }
             }
 

@@ -12,11 +12,11 @@ namespace ConsoleApp1
         const int SPITFIRE = 156;
         const int J7W_SHINDEN = 157;
 
+        Field field;
 
         public void Select()
         {
-            
-            Field field = new Field();
+            field = new Field();
             int cursorPos_x = 16;
             int cursorPos_y = 40;
             bool characterSelect=false;
@@ -58,16 +58,16 @@ namespace ConsoleApp1
                     case ConsoleKey.Enter:
                         if(cursorPos_x==16)
                         {
-                            field.unitType = P_38;
+                            Field.unitType = P_38;
 
                         }
                         if(cursorPos_x==32)
                         {
-                            field.unitType = SPITFIRE;
+                            Field.unitType = SPITFIRE;
                         }
                         if(cursorPos_x==48)
                         {
-                            field.unitType = J7W_SHINDEN;
+                            Field.unitType = J7W_SHINDEN;
                         }
                         characterSelect = true;
                         break;
