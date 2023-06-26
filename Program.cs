@@ -14,7 +14,12 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
+            Console.SetWindowSize(81, 51);
+            ChooseCharacter chooseCharacter = new ChooseCharacter();
+            Title title = new Title();
             Field myfield = new Field();
+            title.gameTitle();
+            chooseCharacter.Select();
             myfield.Play();
         }
     }

@@ -10,6 +10,7 @@ namespace ConsoleApp1
     {
         public int X;
         public int Y; 
+        
 
         public Bullet(int x, int y)
         {

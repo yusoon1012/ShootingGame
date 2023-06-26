@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
-    internal class Player
+    public class Player
     {
+       
+
     }
 }
