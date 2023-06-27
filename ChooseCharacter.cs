@@ -52,7 +52,7 @@ namespace ConsoleApp1
                 }
                 Console.Write("  ");
                 selectInfo = Console.ReadKey();
-
+                
                 switch (selectInfo.Key)
                 {
                     case ConsoleKey.Enter:
