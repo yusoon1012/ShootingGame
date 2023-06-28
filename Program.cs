@@ -16,11 +16,24 @@ namespace ConsoleApp1
         {
             Console.SetWindowSize(81, 51);
             ChooseCharacter chooseCharacter = new ChooseCharacter();
+            Ending ending = new Ending();
             Title title = new Title();
             Field myfield = new Field();
+            while (true) 
+            {
+
             title.gameTitle();
             chooseCharacter.Select();
             myfield.Play();
+                if(Field.bossClear==true)
+                {
+                    
+                    break;
+                }
+            }
+            Console.Clear();
+            ending.EndScreen();
+            Console.ReadLine();
         }
     }
 }

@@ -29,7 +29,7 @@ namespace ConsoleApp1
                 ConsoleKeyInfo selectInfo;
                 Console.WriteLine("기체를 선택");
                
-                    CursorPosition(14, cursorPos_y - 2);
+                    CursorPosition(15, cursorPos_y - 2);
                    Console.Write("P_38");
                  
                

@@ -11,6 +11,8 @@ namespace ConsoleApp1
         public int enemyPos_X;
         public int enemyPos_Y;
         public int enemyHp;
+        public int spawnTimer;
+        public int spawnCheck;
         public Enemy(int x,int y)
         {
             enemyPos_X = x;

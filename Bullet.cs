@@ -9,8 +9,9 @@ namespace ConsoleApp1
     public class Bullet
     {
         public int X;
-        public int Y; 
-        
+        public int Y;
+        public int bulletTimer;
+        public int bulletCheck;
 
         public Bullet(int x, int y)
         {

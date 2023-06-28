@@ -10,37 +10,56 @@ namespace ConsoleApp1
     public class GameOver
     {
         ConsoleKeyInfo restartKey;
-        bool isRestart=false;
-        
+        bool isRestart = false;
+
         public void OverDisplay()
         {
             int count = 10;
-            while(isRestart==false)
-            { 
-            CursorPosition(20, 30);
-            Console.WriteLine("GAME OVER");
+            while (isRestart == false)
+            {
+                CursorPosition(20, 30);
+                Console.WriteLine("GAME OVER");
                 CursorPosition(20, 31);
 
                 Console.WriteLine("이어하려면 ENTER 키를 누르세요.");
                 CursorPosition(24, 32);
 
-                Console.Write("{0} ",count);
-                if(Console.KeyAvailable)
-                { 
-                restartKey = Console.ReadKey();
-            if(restartKey.Key==ConsoleKey.Enter)
+                Console.Write("{0} ", count);
+                if (Console.KeyAvailable)
                 {
-                    break;
+                    restartKey = Console.ReadKey();
+                    if (restartKey.Key == ConsoleKey.Enter)
+                    {
+                        break;
+                    }
+
+                    if (count > 0)
+                    {
+                        count -= 1;
+                        Thread.Sleep(300);
+                    }
                 }
-            
-                        continue;
+                else
+                {
+                    if (count > 0)
+                    {
+                        count -= 1;
+                        Thread.Sleep(1000);
+                    }
                 }
-                Thread.Sleep(1000);
+             
                 if (count == 0)
                 {
 
+                    Console.Clear();
+                    Title.isResetGame = true;
+                    break;
                 }
-                count -= 1;
+                
+
+
+
+
             }
 
         }
@@ -49,5 +68,5 @@ namespace ConsoleApp1
             Console.SetCursorPosition(x, y);
         }
     }
-    
+
 }
