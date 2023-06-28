@@ -12,8 +12,9 @@ namespace ConsoleApp1
         public void gameTitle()
         {
             ConsoleKeyInfo inputKey;
-            CursorPosition(0, 0);
-            Console.WriteLine("아무키나 눌러서 게임시작");
+            //CursorPosition(0, 0);
+            //Console.WriteLine("아무키나 눌러서 게임시작");
+            DrawTitle();
             inputKey = Console.ReadKey();
             isResetGame = false;
 
@@ -21,6 +22,65 @@ namespace ConsoleApp1
         public void CursorPosition(int x, int y)
         {
             Console.SetCursorPosition(x, y);
+        }
+        public void DrawTitle()
+        {
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("          ┌──────┐     ┌──────┐             ┌──────┐     ┌────────────┐           ");
+            Console.WriteLine("          │      │   ┌         ─┐          ┌┘      │     │            │           ");
+            Console.WriteLine("          │      │  │            ┐        ┌┘       │     │            │           ");
+            Console.WriteLine("          │      │  │     ──┐    │       ┌┘        │     │     ───────┘           ");
+            Console.WriteLine("          └─┐    │  │    │  │    │      ┌┘         │     │    │                   ");
+            Console.WriteLine("            │    │  │    │  │    │     ┌┘    ┌┐    │     │    │                   ");
+            Console.WriteLine("            │    │  │    └──     │    ┌┘    ┌┘│    │     │    └─────┐             ");
+            Console.WriteLine("            │    │  └┐           │   ┌┘    ┌┘ │    │     │          └┐            ");
+            Console.WriteLine("            │    │   └┐          │  ┌┘    ┌┘  │    │     │            │           ");
+            Console.WriteLine("            │    │    └─────┐    │  │     └───┘    └──┐  └───────┐    │           ");
+            Console.WriteLine("            │    │          │    │  │                 │          │    │           ");
+            Console.WriteLine("            │    │  ┌────┐  │    │  │                 │  ┌────┐  │    │           ");
+            Console.WriteLine("            │    │  │    │  │    │  └─────────┐    ┌──┘  │    │  │    │           ");
+            Console.WriteLine("            │    │  │    └──     │            │    │     │    └──     │           ");
+            Console.WriteLine("            │    │  │            │            │    │     │            │           ");
+            Console.WriteLine("            │    │   ─┐         ┌┘            │    │      ─┐         ┌┘           ");
+            Console.WriteLine("            └────┘     └───────┘              └────┘        └───────┘             ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("                                                                                  ");
+            Console.WriteLine("▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣");
+
+
+
+
+
+
         }
     }
 }

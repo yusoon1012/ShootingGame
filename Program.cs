@@ -14,7 +14,7 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            Console.SetWindowSize(81, 51);
+            Console.SetWindowSize(80, 51);
             ChooseCharacter chooseCharacter = new ChooseCharacter();
             Ending ending = new Ending();
             Title title = new Title();
