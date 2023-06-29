@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Collections;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
+using System.Dynamic;
 
 namespace ConsoleApp1
 {
@@ -36,7 +37,7 @@ namespace ConsoleApp1
         public void Play()
         {
         List<Boss> bossList = new List<Boss>();
-
+            Ranking ranking = new Ranking();
             GameOver gameOver = new GameOver();
             int lastTick = 0;
             int currentTick;
@@ -76,7 +77,7 @@ namespace ConsoleApp1
             int bombTimerCheck = 0;
             int enemySpawnTimer = 0;
             int enemySpawnCheck = 0;
-            int bossHp = 100000;
+            int bossHp = 50000;
             int enemyMove_randX;
             int enemyMove_randY;
             bool enemyLeft = false;
@@ -89,6 +90,7 @@ namespace ConsoleApp1
             int randE_Y = 0;
             int itemTimer = 0;
             int powerTimer = 0;
+            int enemyPatern;
             bool hardMode = false;
             bool bossOn = false;
             bool respawn = false;
@@ -134,12 +136,16 @@ namespace ConsoleApp1
                         {
                             if (x == 31 && y < 41)
                             {
-                                Console.Write("□");
+                                Console.Write("│");
                             }
-                            if (y == 41 && x < 32)
+                            if (y == 41 && x < 31)
                             {
-                                Console.Write("□");
+                                Console.Write("──");
                                 continue;
+                            }
+                            if(y==41&&x == 31)
+                            {
+                                Console.Write("┘");
                             }
                             board[y, x] = 0;
                             foreach (var bullet in playerBulletList)
@@ -214,7 +220,15 @@ namespace ConsoleApp1
                                 {
                                     Console.ForegroundColor = ConsoleColor.Green;
                                 }
-                                Console.Write("▲");
+                                if (unitType == J7W_SHINDEN)
+                                {
+                                    Console.Write("∥");
+                                }
+                                else
+                                {
+                                    Console.Write("▲");
+
+                                }
                                 Console.ResetColor();
 
 
@@ -289,16 +303,21 @@ namespace ConsoleApp1
                                 }
                                 else if (unitType == J7W_SHINDEN)
                                 {
-                                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                                    Console.ForegroundColor = ConsoleColor.Green;
 
                                 }
                                 if (board[pos_Y + 2, pos_X - 1] == PLAYER_WING && x < pos_X && unitType == J7W_SHINDEN)
                                 {
+                                    Console.ForegroundColor= ConsoleColor.DarkGreen;
                                     Console.Write("◀");
+                                    Console.ResetColor();
+
                                 }
                                 else if (board[pos_Y + 2, pos_X + 1] == PLAYER_WING && x > pos_X && unitType == J7W_SHINDEN)
                                 {
+                                    Console.ForegroundColor = ConsoleColor.DarkGreen;
                                     Console.Write("▶");
+                                    Console.ResetColor();
                                 }
                                 else
                                 {
@@ -407,14 +426,14 @@ namespace ConsoleApp1
                         }
                         else
                         {
-                            if (eBullet.X > pos_X)
-                            {
-                                eBullet.X -= 1;
-                            }
-                            else
-                            {
-                                eBullet.X += 1;
-                            }
+                            //if (eBullet.X > pos_X)
+                            //{
+                            //    eBullet.X -= 1;
+                            //}
+                            //else
+                            //{
+                            //    eBullet.X += 1;
+                            //}
                             //총알이 따라다니는기믹
 
                             eBullet.Y += 1;
@@ -422,6 +441,7 @@ namespace ConsoleApp1
                         }
 
                         if (eBullet.Y > 39 || eBullet.X < 1 || eBullet.X > 29)
+
                         {
                             enemyBulletList.RemoveAt(j);
                         }
@@ -522,9 +542,42 @@ namespace ConsoleApp1
                         {
                             bossBullet.Y -= 1;
                         }
-                        if (bossBullet.X < 1 || bossBullet.X > 29 || bossBullet.Y < 0 || bossBullet.Y > 39)
+                        if (bossBullet.X < 1 || bossBullet.X > 29 || bossBullet.Y < 1 || bossBullet.Y > 39)
                         {
                             bossBulletList.RemoveAt(k);
+                        }
+
+                        if (board[bossBullet.Y, bossBullet.X] == PLAYER_WING || bossBullet.X == pos_X && bossBullet.Y == pos_Y)
+                        {
+                            if (isGodMod == false)
+                            {
+                                playerHp -= 1;
+                                Console.Beep();
+                                Console.Beep();
+                                Console.Beep();
+
+                                powerCount = 0;
+                                if (respawnTick == 0)
+                                {
+                                    respawnTick = System.Environment.TickCount;
+                                }
+                                currentTick = System.Environment.TickCount;
+                                if (currentTick - respawnWaitTime <= 200)
+                                {
+
+                                }
+                                else
+                                {
+                                    respawnTick = 0;
+
+                                    
+                                    pos_X = 15;
+                                    pos_Y = 35;
+                                    isGodMod = true;
+
+                                }
+
+                            }
                         }
                     }
 
@@ -821,10 +874,9 @@ namespace ConsoleApp1
                             {
                                 var boss = bossList[l];
 
-                            
-                                
-                         
-                         
+
+
+                               
                            
 
 
@@ -980,8 +1032,34 @@ namespace ConsoleApp1
                     }
                     if (bossClear)
                     {
-                        Thread.Sleep(10000);
+
+                        ranking.RecordRank(score);
+                        enemyList.Clear();
+                        playerBulletList.Clear();
+                        enemyBulletList.Clear();
+                        bossBulletList.Clear();
+                        
+                        if(pos_X>15)
+                        {
+                            pos_X -= 1;
+                            Thread.Sleep(50);
+                        }
+                        else if(pos_X<15)
+                        {
+                            pos_X += 1;
+                            Thread.Sleep(50);
+                        }
+                        if(pos_X==15)
+                        {
+                            pos_Y -= 1;
+                            Thread.Sleep(50);
+
+                        }
+                        if(pos_Y==1)
+                        {
+
                         break;
+                        }
                     }
                     if (countEnemy == 30)
                     {
@@ -1089,324 +1167,337 @@ namespace ConsoleApp1
                         }
                     }
 
-
-                    if (Console.KeyAvailable)
+                    if(!bossClear)
                     {
 
-                        inputKey = Console.ReadKey(true);
-
-                        switch (inputKey.Key)
+                        if (Console.KeyAvailable)
                         {
 
-                            //case ConsoleKey.LeftArrow:
-                            //    if (pos_X > 1)
-                            //    {
-                            //        pos_X -= 1;
+                            inputKey = Console.ReadKey(true);
+
+                            switch (inputKey.Key)
+                            {
+
+                                //case ConsoleKey.LeftArrow:
+                                //    if (pos_X > 1)
+                                //    {
+                                //        pos_X -= 1;
 
 
-                            //    }
-                            //    break;
-                            //case ConsoleKey.RightArrow:
-                            //    if (pos_X < 29)
-                            //    {
+                                //    }
+                                //    break;
+                                //case ConsoleKey.RightArrow:
+                                //    if (pos_X < 29)
+                                //    {
 
-                            //        pos_X += 1;
+                                //        pos_X += 1;
 
-                            //    }
-                            //    break;
-                            //case ConsoleKey.UpArrow:
-                            //    if (pos_Y > 1)
-                            //    {
-                            //        pos_Y -= 1;
-                            //    }
-                            //    break;
-                            //case ConsoleKey.DownArrow:
-                            //    if (pos_Y < 39)
-                            //    {
-                            //        pos_Y += 1;
-                            //    }
-                            //    break;
-                            case ConsoleKey.Q:
-                                if (hardMode == false)
-                                {
-                                    hardMode = true;
-
-                                }
-                                else
-                                {
-                                    hardMode = false;
-                                }
-                                break;
-                            case ConsoleKey.Z:
-
-                                
-                                while (shootCount < 4)
-                                {
-                                    if (pos_Y - shootCount - shootDelay > 5)
+                                //    }
+                                //    break;
+                                //case ConsoleKey.UpArrow:
+                                //    if (pos_Y > 1)
+                                //    {
+                                //        pos_Y -= 1;
+                                //    }
+                                //    break;
+                                //case ConsoleKey.DownArrow:
+                                //    if (pos_Y < 39)
+                                //    {
+                                //        pos_Y += 1;
+                                //    }
+                                //    break;
+                                case ConsoleKey.Q:
+                                    if (hardMode == false)
                                     {
+                                        hardMode = true;
 
-                                        if (playerBulletList.Count < bulletLimit)
-                                        {
-                                            if (unitType == SPITFIRE)
-                                            {
-                                                if (pos_X >= 0)
-                                                {
-                                                    playerBulletList.Add(new Bullet(pos_X - 1, pos_Y - shootCount - shootDelay));
-
-                                                }
-                                                if (pos_X < 30)
-                                                {
-                                                    playerBulletList.Add(new Bullet(pos_X + 1, pos_Y - shootCount - shootDelay));
-
-                                                }
-
-                                            }
-                                            else if (unitType == P_38)
-                                            {
-                                                playerBulletList.Add(new Bullet(pos_X, pos_Y - shootCount - shootDelay));
-                                               
-
-
-                                            }
-                                            else if (unitType == J7W_SHINDEN)
-                                            {
-                                                //playerBulletList.Add(new Bullet(pos_X, pos_Y - shootCount - shootDelay));
-                                                playerBulletList.Add(new Bullet(pos_X, pos_Y - shootCount - shootDelay - 1));
-
-                                            }
-                                            //if(powerCount>=1&&unitType==SPITFIRE)
-                                            //{
-                                            //    playerBulletList.Add(new Bullet(pos_X , pos_Y - shootCount - shootDelay));
-
-                                            //}
-                                            if (powerCount >= 1 && unitType == SPITFIRE)
-                                            {
-                                                if (pos_X < 28)
-                                                {
-                                                    playerBulletList.Add(new Bullet(pos_X + 2, pos_Y - shootCount - shootDelay));
-
-                                                }
-                                                if (pos_X > 2)
-                                                {
-
-                                                    playerBulletList.Add(new Bullet(pos_X - 2, pos_Y - shootCount - shootDelay));
-                                                }
-
-                                            }
-                                            else if (powerCount >= 2 && unitType == SPITFIRE)
-                                            {
-                                                playerBulletList.Add(new Bullet(pos_X, pos_Y - shootCount - shootDelay));
-                                                playerBulletList.Add(new Bullet(pos_X, pos_Y - shootCount - shootDelay));
-                                            }
-                                            if (powerCount >= 1 && unitType == P_38)
-                                            {
-                                                if (pos_X > 0)
-                                                {
-                                                    playerBulletList.Add(new Bullet(pos_X - 1, pos_Y - shootCount - shootDelay + 1));
-                                                }
-                                                if (pos_X < 39)
-                                                {
-                                                    playerBulletList.Add(new Bullet(pos_X + 1, pos_Y - shootCount - shootDelay + 1));
-
-                                                }
-                                                bulletLimit = 40;
-
-                                            }
-                                            if (powerCount >= 2 && unitType == P_38)
-                                            {
-
-                                                if (pos_X > 1)
-                                                {
-                                                    playerBulletList.Add(new Bullet(pos_X - 2, pos_Y - shootCount - shootDelay + 1));
-                                                }
-                                                if (pos_X < 39)
-                                                {
-                                                    playerBulletList.Add(new Bullet(pos_X + 2, pos_Y - shootCount - shootDelay + 1));
-
-                                                }
-                                                bulletLimit = 60;
-                                            }
-
-                                        }
-                                        shootDelay++;
-                                        shootCount++;
                                     }
                                     else
                                     {
-                                        break;
+                                        hardMode = false;
                                     }
-                                }
-                                break;
-                            case ConsoleKey.X:
-                                if (bombCount > 0)
-                                {
-                                    isGodMod = true;
-                                    isBomb_Explode = true;
-                                    enemyBulletList.Clear();
+                                    break;
+                                case ConsoleKey.Z:
 
-                                }
-                                if (isBomb_Explode == true && bombCount > 0 && unitType == SPITFIRE)
-                                {
-                                    for (int y = 0; y < pos_Y - 1; y++)
+
+                                    while (shootCount < 4)
                                     {
-                                        if (pos_X > 35)
+                                        if (pos_Y - shootCount - shootDelay > 5)
                                         {
 
-                                            for (int x = pos_X - 5; x < pos_X; x++)
+                                            if (playerBulletList.Count < bulletLimit)
                                             {
+                                                if (unitType == SPITFIRE)
+                                                {
+                                                    if (pos_X >= 0)
+                                                    {
+                                                        playerBulletList.Add(new Bullet(pos_X - 1, pos_Y - shootCount - shootDelay));
 
-                                                playerBulletList.Add(new Bullet(x, y));
-                                            }
-                                        }
-                                        else if (pos_X < 5)
-                                        {
-                                            for (int x = pos_X - pos_X; x < pos_X + 5; x++)
-                                            {
+                                                    }
+                                                    if (pos_X < 30)
+                                                    {
+                                                        playerBulletList.Add(new Bullet(pos_X + 1, pos_Y - shootCount - shootDelay));
 
-                                                playerBulletList.Add(new Bullet(x, y));
+                                                    }
+
+                                                }
+                                                else if (unitType == P_38)
+                                                {
+                                                    playerBulletList.Add(new Bullet(pos_X, pos_Y - shootCount - shootDelay));
+
+
+
+                                                }
+                                                else if (unitType == J7W_SHINDEN)
+                                                {
+                                                    //playerBulletList.Add(new Bullet(pos_X, pos_Y - shootCount - shootDelay));
+                                                    playerBulletList.Add(new Bullet(pos_X, pos_Y - shootCount - shootDelay - 1));
+
+
+                                                }
+                                                //if(powerCount>=1&&unitType==SPITFIRE)
+                                                //{
+                                                //    playerBulletList.Add(new Bullet(pos_X , pos_Y - shootCount - shootDelay));
+
+                                                //}
+                                                if (powerCount >= 1 && unitType == SPITFIRE)
+                                                {
+                                                    if (pos_X < 28)
+                                                    {
+                                                        playerBulletList.Add(new Bullet(pos_X + 2, pos_Y - shootCount - shootDelay));
+
+                                                    }
+                                                    if (pos_X > 2)
+                                                    {
+
+                                                        playerBulletList.Add(new Bullet(pos_X - 2, pos_Y - shootCount - shootDelay));
+                                                    }
+
+                                                }
+                                                else if (powerCount >= 2 && unitType == SPITFIRE)
+                                                {
+                                                    playerBulletList.Add(new Bullet(pos_X, pos_Y - shootCount - shootDelay));
+                                                    playerBulletList.Add(new Bullet(pos_X, pos_Y - shootCount - shootDelay));
+                                                }
+                                                if (powerCount >= 1 && unitType == P_38)
+                                                {
+                                                    if (pos_X > 0)
+                                                    {
+                                                        playerBulletList.Add(new Bullet(pos_X - 1, pos_Y - shootCount - shootDelay + 1));
+                                                    }
+                                                    if (pos_X < 39)
+                                                    {
+                                                        playerBulletList.Add(new Bullet(pos_X + 1, pos_Y - shootCount - shootDelay + 1));
+
+                                                    }
+                                                    bulletLimit = 40;
+
+                                                }
+                                                if (powerCount >= 2 && unitType == P_38)
+                                                {
+
+                                                    if (pos_X > 1)
+                                                    {
+                                                        playerBulletList.Add(new Bullet(pos_X - 2, pos_Y - shootCount - shootDelay + 1));
+                                                    }
+                                                    if (pos_X < 39)
+                                                    {
+                                                        playerBulletList.Add(new Bullet(pos_X + 2, pos_Y - shootCount - shootDelay + 1));
+
+                                                    }
+                                                    bulletLimit = 60;
+                                                }
+                                                if (powerCount >= 2 && unitType == J7W_SHINDEN)
+                                                {
+                                                    if (pos_X > 1)
+                                                    {
+                                                        playerBulletList.Add(new Bullet(pos_X - 1, pos_Y - shootCount - shootDelay - 1));
+
+                                                    }
+                                                }
+
                                             }
+                                            shootDelay++;
+                                            shootCount++;
                                         }
                                         else
                                         {
-                                            for (int x = pos_X - 5; x < pos_X + 5; x++)
-                                            {
-
-                                                playerBulletList.Add(new Bullet(x, y));
-                                            }
+                                            break;
                                         }
-
-
                                     }
-
-
-
-                                    
-
+                                    break;
+                                case ConsoleKey.X:
                                     if (bombCount > 0)
                                     {
-                                        bombCount -= 1;
+                                        isGodMod = true;
+                                        isBomb_Explode = true;
+                                        enemyBulletList.Clear();
 
                                     }
-                                }
-                                if (isBomb_Explode == true && bombCount > 0 && unitType == P_38)
-                                {
-                                    if (pos_X > 5 && pos_Y > 5)
+                                    if (isBomb_Explode == true && bombCount > 0 && unitType == SPITFIRE)
                                     {
-                                        for (int y = pos_Y - 5; y < pos_Y + 5; y++)
+                                        for (int y = 0; y < pos_Y - 1; y++)
                                         {
-                                            for (int x = pos_X - 5; x < pos_X + 5; x++)
+                                            if (pos_X > 35)
                                             {
-                                                playerBulletList.Add(new Bullet(x, y));
+
+                                                for (int x = pos_X - 5; x < pos_X; x++)
+                                                {
+
+                                                    playerBulletList.Add(new Bullet(x, y));
+                                                }
                                             }
+                                            else if (pos_X < 5)
+                                            {
+                                                for (int x = pos_X - pos_X; x < pos_X + 5; x++)
+                                                {
+
+                                                    playerBulletList.Add(new Bullet(x, y));
+                                                }
+                                            }
+                                            else
+                                            {
+                                                for (int x = pos_X - 5; x < pos_X + 5; x++)
+                                                {
+
+                                                    playerBulletList.Add(new Bullet(x, y));
+                                                }
+                                            }
+
+
                                         }
 
-                                    }
-                                    else if (pos_X > 0 && pos_Y > 5)
-                                    {
-                                        for (int y = pos_Y - 5; y < pos_Y + 5; y++)
-                                        {
-                                            for (int x = pos_X - pos_X; x < pos_X + 5; x++)
-                                            {
-                                                playerBulletList.Add(new Bullet(x, y));
-                                            }
-                                        }
 
-                                    }
-                                    else if (pos_X > 35 && pos_Y > 5)
-                                    {
-                                        for (int y = pos_Y - 5; y < pos_Y + 5; y++)
-                                        {
-                                            for (int x = pos_X - 5; x < pos_X; x++)
-                                            {
-                                                playerBulletList.Add(new Bullet(x, y));
-                                            }
-                                        }
 
-                                    }
-                                    else if (pos_X > 35 && pos_Y < 5)
-                                    {
-                                        for (int y = pos_Y - pos_Y; y < pos_Y + 5; y++)
-                                        {
-                                            for (int x = pos_X - 5; x < pos_X; x++)
-                                            {
-                                                playerBulletList.Add(new Bullet(x, y));
-                                            }
-                                        }
 
-                                    }
-                                    else if (pos_X > 0 && pos_Y < 5)
-                                    {
-                                        for (int y = pos_Y - pos_Y; y < pos_Y + 5; y++)
-                                        {
-                                            for (int x = pos_X - pos_X; x < pos_X + 5; x++)
-                                            {
-                                                playerBulletList.Add(new Bullet(x, y));
-                                            }
-                                        }
 
-                                    }
-                                }
-                                if (isBomb_Explode == true && unitType == J7W_SHINDEN)
-                                {
-                                    if (pos_Y > 9 && pos_X > 3)
-                                    {
-                                        for (int y = pos_Y - 9; y < pos_Y; y++)
+                                        if (bombCount > 0)
                                         {
-                                            for (int x = pos_X - 3; x < pos_X + 4; x++)
+                                            bombCount -= 1;
+
+                                        }
+                                    }
+                                    if (isBomb_Explode == true && bombCount > 0 && unitType == P_38)
+                                    {
+                                        if (pos_X > 5 && pos_Y > 5)
+                                        {
+                                            for (int y = pos_Y - 5; y < pos_Y + 5; y++)
                                             {
-                                                if (y == pos_Y - 9 && x == pos_X)
+                                                for (int x = pos_X - 5; x < pos_X + 5; x++)
                                                 {
                                                     playerBulletList.Add(new Bullet(x, y));
-
                                                 }
-                                                else if (y == pos_Y - 8 && x >= pos_X - 1 && x <= pos_X + 1)
-                                                {
-                                                    playerBulletList.Add(new Bullet(x, y));
-
-                                                }
-                                                else if (y == pos_Y - 7 && x >= pos_X - 2 && x <= pos_X + 2)
-                                                {
-                                                    playerBulletList.Add(new Bullet(x, y));
-
-                                                }
-                                                else if (y > pos_Y - 6)
-                                                {
-                                                    playerBulletList.Add(new Bullet(x, y));
-
-                                                }
-                                                //playerBulletList.Add(new Bullet(x, y));
                                             }
+
                                         }
+                                        else if (pos_X > 0 && pos_Y > 5)
+                                        {
+                                            for (int y = pos_Y - 5; y < pos_Y + 5; y++)
+                                            {
+                                                for (int x = pos_X - pos_X; x < pos_X + 5; x++)
+                                                {
+                                                    playerBulletList.Add(new Bullet(x, y));
+                                                }
+                                            }
 
+                                        }
+                                        else if (pos_X > 35 && pos_Y > 5)
+                                        {
+                                            for (int y = pos_Y - 5; y < pos_Y + 5; y++)
+                                            {
+                                                for (int x = pos_X - 5; x < pos_X; x++)
+                                                {
+                                                    playerBulletList.Add(new Bullet(x, y));
+                                                }
+                                            }
+
+                                        }
+                                        else if (pos_X > 35 && pos_Y < 5)
+                                        {
+                                            for (int y = pos_Y - pos_Y; y < pos_Y + 5; y++)
+                                            {
+                                                for (int x = pos_X - 5; x < pos_X; x++)
+                                                {
+                                                    playerBulletList.Add(new Bullet(x, y));
+                                                }
+                                            }
+
+                                        }
+                                        else if (pos_X > 0 && pos_Y < 5)
+                                        {
+                                            for (int y = pos_Y - pos_Y; y < pos_Y + 5; y++)
+                                            {
+                                                for (int x = pos_X - pos_X; x < pos_X + 5; x++)
+                                                {
+                                                    playerBulletList.Add(new Bullet(x, y));
+                                                }
+                                            }
+
+                                        }
                                     }
-                                    else if (pos_Y < 27)
+                                    if (isBomb_Explode == true && unitType == J7W_SHINDEN)
                                     {
+                                        if (pos_Y > 9 && pos_X > 3)
+                                        {
+                                            for (int y = pos_Y - 9; y < pos_Y; y++)
+                                            {
+                                                for (int x = pos_X - 3; x < pos_X + 4; x++)
+                                                {
+                                                    if (y == pos_Y - 9 && x == pos_X)
+                                                    {
+                                                        playerBulletList.Add(new Bullet(x, y));
 
+                                                    }
+                                                    else if (y == pos_Y - 8 && x >= pos_X - 1 && x <= pos_X + 1)
+                                                    {
+                                                        playerBulletList.Add(new Bullet(x, y));
+
+                                                    }
+                                                    else if (y == pos_Y - 7 && x >= pos_X - 2 && x <= pos_X + 2)
+                                                    {
+                                                        playerBulletList.Add(new Bullet(x, y));
+
+                                                    }
+                                                    else if (y > pos_Y - 6)
+                                                    {
+                                                        playerBulletList.Add(new Bullet(x, y));
+
+                                                    }
+                                                    //playerBulletList.Add(new Bullet(x, y));
+                                                }
+                                            }
+
+                                        }
+                                        else if (pos_Y < 27)
+                                        {
+
+                                        }
+                                        if (bombCount > 0)
+                                        {
+                                            bombCount -= 1;
+
+                                        }
                                     }
-                                    if (bombCount > 0)
+
+                                    break;
+                                case ConsoleKey.A:
+                                    if (autoFire == true)
                                     {
-                                        bombCount -= 1;
+                                        autoFire = false;
+                                    }
+                                    else
+                                    {
+                                        autoFire = true;
 
                                     }
-                                }
+                                    break;
+                                default:
+                                    break;
 
-                                break;
-                            case ConsoleKey.A:
-                                if (autoFire == true)
-                                {
-                                    autoFire = false;
-                                }
-                                else
-                                {
-                                    autoFire = true;
+                            }
+                        }//키입력
+                    }
 
-                                }
-                                break;
-                            default:
-                                break;
-
-                        }
-                    }//키입력
                 }
             }
 
@@ -1422,6 +1513,75 @@ namespace ConsoleApp1
             {
                 Console.ReadKey(false);
             }
+        }
+        public void DrawHp(int hpC)
+        {
+
+        }
+        public void DrawBomb(int bombC)
+        {
+            
+        }
+        public void DrawScore(int scoreC)
+        {
+
+        }
+
+        public void DrawMove()
+        {
+
+        }
+        public void DrawP38()
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            CursorPosition(14, 33);
+            Console.Write("  ▲  ");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            CursorPosition(14, 34);
+
+            Console.Write("■■■");
+            CursorPosition(14, 35);
+
+            Console.Write("  ■");
+            Console.ResetColor();
+        }
+        public void DrawSpitfire()
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            CursorPosition(36, 33);
+            Console.Write("■");
+            CursorPosition(38, 33);
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.Write("▲");
+            CursorPosition(40, 33);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write("■");
+            CursorPosition(38, 34);
+            Console.Write("■");
+            CursorPosition(38, 35);
+            Console.Write("■");
+            Console.ResetColor();
+        }
+        public void Drawj7w()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            CursorPosition(59, 33);
+            Console.Write("∥");
+            CursorPosition(59, 34);
+            Console.Write("■");
+            CursorPosition(57, 35);
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Write("◀");
+            CursorPosition(59, 35);
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            Console.Write("■");
+
+            CursorPosition(61, 35);
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Write("▶");
+            Console.ResetColor();
+
         }
     }
 

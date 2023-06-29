@@ -17,6 +17,7 @@ namespace ConsoleApp1
             int count = 10;
             while (isRestart == false)
             {
+                
                 CursorPosition(20, 30);
                 Console.WriteLine("GAME OVER");
                 CursorPosition(20, 31);
@@ -32,12 +33,15 @@ namespace ConsoleApp1
                     {
                         break;
                     }
-
-                    if (count > 0)
+                    else
                     {
-                        count -= 1;
-                        Thread.Sleep(300);
+                        if (count > 0)
+                        {
+                            count -= 1;
+                            Thread.Sleep(300);
+                        }
                     }
+                    
                 }
                 else
                 {
@@ -46,6 +50,7 @@ namespace ConsoleApp1
                         count -= 1;
                         Thread.Sleep(1000);
                     }
+                   
                 }
              
                 if (count == 0)
@@ -66,6 +71,13 @@ namespace ConsoleApp1
         public void CursorPosition(int x, int y)
         {
             Console.SetCursorPosition(x, y);
+        }
+        public void ClearBuffer()
+        {
+            while (Console.KeyAvailable)
+            {
+                Console.ReadKey(false);
+            }
         }
     }
 

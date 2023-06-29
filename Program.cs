@@ -19,20 +19,17 @@ namespace ConsoleApp1
             Ending ending = new Ending();
             Title title = new Title();
             Field myfield = new Field();
+            Ranking ranking = new Ranking();
             while (true) 
             {
 
             title.gameTitle();
             chooseCharacter.Select();
             myfield.Play();
-                if(Field.bossClear==true)
-                {
-                    
-                    break;
-                }
+            ranking.RankBoard();
             }
             Console.Clear();
-            ending.EndScreen();
+            
             Console.ReadLine();
         }
     }
