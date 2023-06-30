@@ -11,71 +11,11 @@ namespace ConsoleApp1
     {
         public static int nowScore;
         public static int highScore;
-        public int[] scoreBoard = new int[10];
-        
+        List<KeyValuePair<int,string>> scores= new List<KeyValuePair<int, string>>();
         public void RankBoard()
         {
-            int rankTimer = 0;
-            int rankCheck = 0;
-           
-            int index = 0;
-            Console.Clear();
-           
-                CursorPosition(0, 0);
-                DrawInterface();
-                
-                for(int y=0;y<scoreBoard.Length;y++)
-                {
-                    for(int x=0;x<scoreBoard.Length;x++)
-                    {
-
-                    }
-                }
-              for(int i = 0; i < scoreBoard.Length; i++)
-                {
-                    if(nowScore>highScore)
-                    {
-                        CursorPosition(30, 7+i);
-                    Console.WriteLine("[NEW]{0}점",nowScore);
-             
-                            highScore = nowScore;
-                        scoreBoard[0] = highScore;
-                    }
-                    else
-                    {
-                        CursorPosition(30,7 +i+ index);
-                        if (scoreBoard[i]==0&&nowScore<highScore)
-                        {
-                            scoreBoard[i] = nowScore;
-                        }
-                        Console.WriteLine("[{0}]{1}점", i + 1, scoreBoard[i]);
-                        index += 1;
-                        Thread.Sleep(100);
-                    }
-                }
-                Console.ReadKey();
-              //if(rankTimer==0)
-              //  {
-              //      rankTimer=System.Environment.TickCount;
-              //  }
-              //  rankCheck = System.Environment.TickCount;
-              //  if(rankCheck-rankTimer<=10000)
-              //  {
-
-              //  }
-              //  else
-              //  {
-              //      rankTimer = 0;
-                  
-              //  }
-              //  index = 0;
-              //  if (Console.KeyAvailable)
-              //  {
-                
-                   
-              //  }
-            
-
+            DrawInterface();
+            Console.ReadKey();
         }
         public void RecordRank(int _nowScore)
         {

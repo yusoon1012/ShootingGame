@@ -23,14 +23,26 @@ namespace ConsoleApp1
             bool characterSelect=false;
             Console.CursorVisible = false;
             Console.Clear();
-            Player player = new Player();   
+            
             while (characterSelect==false)
             {
                 Console.CursorVisible = false;
                 DrawInterface();
                 CursorPosition(0, 0);
                 ConsoleKeyInfo selectInfo;
-                Console.WriteLine("기체를 선택");
+               
+                if(cursorPos_x == 16)
+                {
+                    P38Info();
+                }
+                else if(cursorPos_x==38)
+                {
+                    SpitfireInfo();
+                }
+                else if(cursorPos_x==59)
+                {
+                    J7WInfo();
+                }
                 DrawP38();
                     CursorPosition(15, cursorPos_y - 2);
                    Console.Write("P_38");
@@ -112,6 +124,142 @@ namespace ConsoleApp1
         public void CursorPosition(int x, int y)
         {
             Console.SetCursorPosition(x, y);
+        }
+        private void P38Info()
+        {
+            CursorPosition(10, 7);
+            Console.Write("              ■■");
+            CursorPosition(10, 8);
+            Console.Write("            ■■■■");
+            CursorPosition(10, 9);
+            Console.Write("          ■■■■■■");
+            CursorPosition(10, 10);
+            Console.Write("          ■■■■■■");
+            CursorPosition(10, 11);
+            Console.Write("          ■■■■■■");
+            CursorPosition(10, 12);
+            Console.Write("          ■■■■■■ ");
+            CursorPosition(10, 13);
+            Console.Write("          ■■■■■■");
+            CursorPosition(10, 14);
+            Console.Write("      ■■■■■■■■■■■■");
+            CursorPosition(10, 15);
+            Console.Write("  ■■■■■■■■■■■■■■■■■■          ■■");
+            CursorPosition(10, 16);
+            Console.Write("■■■■■■■■■■■■■■■■■■■■■■■■■■■");
+            CursorPosition(10, 17);
+            Console.Write("  ■■■■■■■■■■■■■■■■■■          ■■");
+            CursorPosition(10, 18);
+            Console.Write("      ■■■■■■■■■■■■");
+            CursorPosition(10, 19);
+            Console.Write("          ■■■■■■");
+            CursorPosition(10, 20);
+            Console.Write("          ■■■■■■");
+            CursorPosition(10, 21);
+            Console.Write("          ■■■■■■");
+            CursorPosition(10, 22);
+            Console.Write("          ■■■■■■ ");
+            CursorPosition(10, 23);
+            Console.Write("          ■■■■■■ ");
+            CursorPosition(10, 24);
+            Console.Write("            ■■■■ ");
+            CursorPosition(10, 25);
+            Console.Write("              ■■ ");
+            CursorPosition(30, 26);
+            Console.Write("       P 38");
+            CursorPosition(30, 27);
+            Console.Write("발사형식 : 스탠다드");
+
+        }
+        private void SpitfireInfo()
+        {
+            CursorPosition(10, 7);
+            Console.Write("    ■■");
+            CursorPosition(10, 8);
+            Console.Write("    ■■■■");
+            CursorPosition(10, 9);
+            Console.Write("    ■■■■■■");
+            CursorPosition(10, 10);
+            Console.Write("    ■■■■■■");
+            CursorPosition(10, 11);
+            Console.Write("    ■■■■■■");
+            CursorPosition(10, 12);
+            Console.Write("    ■■■■■■ ");
+            CursorPosition(10, 13);
+            Console.Write("    ■■■■■■");
+            CursorPosition(10, 14);
+            Console.Write("    ■■■■■■■■■■■■■               ■■■■ ");
+            CursorPosition(10, 15);
+            Console.Write("  ■■■■■■■■■■■■■■■■■■■■■■■");
+            CursorPosition(10, 16);
+            Console.Write("■■■■■■■■■■■■■■■■■■■■■■■");
+            CursorPosition(10, 17);
+            Console.Write("  ■■■■■■■■■■■■■■■■■■■■■■■");
+            CursorPosition(10, 18);
+            Console.Write("    ■■■■■■■■■■■■■               ■■■■");
+            CursorPosition(10, 19);
+            Console.Write("    ■■■■■■");
+            CursorPosition(10, 20);
+            Console.Write("    ■■■■■■");
+            CursorPosition(10, 21);
+            Console.Write("    ■■■■■■");
+            CursorPosition(10, 22);
+            Console.Write("    ■■■■■■ ");
+            CursorPosition(10, 23);
+            Console.Write("    ■■■■■■ ");
+            CursorPosition(10, 24);
+            Console.Write("    ■■■■ ");
+            CursorPosition(10, 25);
+            Console.Write("    ■■ ");
+            CursorPosition(30, 26);
+            Console.Write("     SPITFIRE");
+            CursorPosition(30, 27);
+            Console.Write("발사형식 : 방사형");
+        }
+        private void J7WInfo()
+        {
+            CursorPosition(10, 7);
+            Console.Write("                                                  ■■");
+            CursorPosition(10, 8);
+            Console.Write("                                              ■■■■");
+            CursorPosition(10, 9);
+            Console.Write("                                              ■■■■");
+            CursorPosition(10, 10);
+            Console.Write("                                              ■■■■");
+            CursorPosition(10, 11);
+            Console.Write("                                              ■■■■");
+            CursorPosition(10, 12);
+            Console.Write("                                              ■■■■ ");
+            CursorPosition(10, 13);
+            Console.Write("                                           ■■■■■");
+            CursorPosition(10, 14);
+            Console.Write("                                           ■■■■■ ");
+            CursorPosition(10, 15);
+            Console.Write("                              ■■■■■■■■■■■■■");
+            CursorPosition(10, 16);
+            Console.Write("      ■■■■■■■■■■■■■■■■■■■■■■■");
+            CursorPosition(10, 17);
+            Console.Write("                              ■■■■■■■■■■■■■");
+            CursorPosition(10, 18);
+            Console.Write("                                           ■■■■■");
+            CursorPosition(10, 19);
+            Console.Write("                                           ■■■■■");
+            CursorPosition(10, 20);
+            Console.Write("                                              ■■■■");
+            CursorPosition(10, 21);
+            Console.Write("                                              ■■■■");
+            CursorPosition(10, 22);
+            Console.Write("                                              ■■■■ ");
+            CursorPosition(10, 23);
+            Console.Write("                                              ■■■■ ");
+            CursorPosition(10, 24);
+            Console.Write("                                              ■■■■ ");
+            CursorPosition(10, 25);
+            Console.Write("                                                  ■■ ");
+            CursorPosition(30, 26);
+            Console.Write("   J7W SHINDEN");
+            CursorPosition(30, 27);
+            Console.Write("발사형식 : 집중형");
         }
         public void DrawP38()
         {

@@ -26,7 +26,7 @@ namespace ConsoleApp1
             title.gameTitle();
             chooseCharacter.Select();
             myfield.Play();
-            ranking.RankBoard();
+            //ranking.RankBoard();
             }
             Console.Clear();
             

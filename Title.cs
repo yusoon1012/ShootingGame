@@ -49,7 +49,7 @@ namespace ConsoleApp1
                     { }
                     else
                     { 
-                    ranking.RankBoard();
+                    //ranking.RankBoard();
                         titleTimer = 0;
                     }
 

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
-    public class Player
+    public class Score
     {
-       
-
+        
     }
 }

@@ -25,9 +25,24 @@ namespace ConsoleApp1
         const int BOSS_LEFT_X = 10;
         const int BOSS_RIGHT_X = 20;
         const int BOSS_TOP_Y = 3;
-        const int BOSS_BOTTOM_Y = 6;
-        const int BOSS_CENTER_X = (BOSS_LEFT_X+ BOSS_RIGHT_X) / 2;
-        const int BOSS_CENTER_Y= (BOSS_TOP_Y+ BOSS_BOTTOM_Y) / 2;
+        const int BOSS_BOTTOM_Y = 9;
+        const int BOSS_CENTER_X = (BOSS_LEFT_X + BOSS_RIGHT_X) / 2;
+        const int BOSS_CENTER_Y = (BOSS_TOP_Y + BOSS_BOTTOM_Y) / 2;
+
+        const int BOSS_L_ARM_X_L = 4;
+        const int BOSS_L_ARM_X_R = 8;
+        const int BOSS_L_ARM_Y_T = 4;
+        const int BOSS_L_ARM_Y_B = 10;
+        const int BOSS_L_ARM_CENTER_X = (BOSS_L_ARM_X_L + BOSS_L_ARM_X_R) / 2;
+        const int BOSS_L_ARM_CENTER_Y = (BOSS_L_ARM_Y_T + BOSS_L_ARM_Y_B) / 2;
+
+        const int BOSS_R_ARM_X_L = 22;
+        const int BOSS_R_ARM_X_R = 26;
+        const int BOSS_R_ARM_Y_T = 4;
+        const int BOSS_R_ARM_Y_B = 10;
+        const int BOSS_R_ARM_CENTER_X = (BOSS_R_ARM_X_L + BOSS_R_ARM_X_R) / 2;
+        const int BOSS_R_ARM_CENTER_Y = (BOSS_R_ARM_Y_T + BOSS_R_ARM_Y_B) / 2;
+
         [DllImport("user32.dll")]
 
         public static extern short GetKeyState(int keyCode);
@@ -36,7 +51,10 @@ namespace ConsoleApp1
         }
         public void Play()
         {
-        List<Boss> bossList = new List<Boss>();
+            Console.Clear();
+            List<Boss> bossList = new List<Boss>();
+            List<Boss> bossL_armList = new List<Boss>();
+            List<Boss> bossR_armList = new List<Boss>();
             Ranking ranking = new Ranking();
             GameOver gameOver = new GameOver();
             int lastTick = 0;
@@ -51,12 +69,15 @@ namespace ConsoleApp1
             const int BOMB = 888;
             const int BOSS = 987;
             const int BOSS_BULLET = 988;
-
+            const int BOSS_LEFT_ARM = 986;
+            const int BOSS_RIGHT_ARM = 985;
+            const int LEFT_ARM_BULLET = 940;
+            const int RIGHT_ARM_BULLET = 950;
             int pos_X = 15;
             int pos_Y = 35;
             int bullet_X = pos_X;
             int score = 0;
-            int bombCount = 5;
+            int bombCount = 3;
             int bombPer;
             int bomb_X = 10;
             int bomb_Y = 20;
@@ -84,25 +105,53 @@ namespace ConsoleApp1
             bool enemyRight = false;
             bool enemyTop = false;
             bool enemyBottom = false;
-            bool playerLeft = false;
-            bool playerRight = false;
+
+            int leftarmcount = 0;
+            int rightarmcount = 0;
             int randE_X = 0;
             int randE_Y = 0;
             int itemTimer = 0;
             int powerTimer = 0;
-            int enemyPatern;
+            int enemyPatern = 0 ;
             bool hardMode = false;
             bool bossOn = false;
             bool respawn = false;
             bool clearEnemy = true;
+            bool leftarmBreak=false;
+            bool rightarmBreak=false;
             
+            int bossBulletTimer = 0;
+            int bossBulletCheck = 0;
+
+            int boss_L_X = BOSS_LEFT_X;
+            int boss_R_X = BOSS_RIGHT_X;
+            int boss_T_Y = BOSS_TOP_Y;
+            int boss_B_Y = 9;
+            int bossCenter_X = BOSS_CENTER_X;
+            int bossCenter_Y = BOSS_CENTER_Y;
+
+            int leftArm_hp = 5000;
+            int rightArm_hp = 5000;
+
+            int leftArmTimer = 0;
+            int leftArmCheck = 0;
+            int rightArmTimer = 0;
+            int rightArmCheck = 0;
+
+            int randomEnemyMove = 0;
+
+
+            const int ENEMY_WING = 555;
+
             int countEnemy = 0;
             List<Bullet> playerBulletList = new List<Bullet>();
             List<Enemy> enemyList = new List<Enemy>();
             List<Bullet> enemyBulletList = new List<Bullet>();
             List<Bomb> bombList = new List<Bomb>();
             List<PowerUP> powerList = new List<PowerUP>();
-            List<Bullet>bossBulletList = new List<Bullet>();
+            List<Bullet> bossBulletList = new List<Bullet>();
+            List<Bullet> leftArmBulletList = new List<Bullet>();
+            List<Bullet> rightArmBulletlist = new List<Bullet>();
             Random rnd = new Random();
 
 
@@ -114,25 +163,33 @@ namespace ConsoleApp1
 
             while (true)
             {
-                if(Title.isResetGame==true)
+                currentTick=System.Environment.TickCount;
+                if (Title.isResetGame == true)
                 {
                     break;
                 }
                 int shootCount = 0;
                 int shootDelay = 0;
                 ClearBuffer();
-                currentTick = System.Environment.TickCount;
-                if (currentTick - lastTick < tickRate)
-                {
-                    continue;
-                }
-                else
-                {
+                //currentTick = System.Environment.TickCount;
+                //if (currentTick - lastTick < tickRate)
+                //{
+                //    continue;
+                //}
+                //else
+                
+                
+                
+               
 
-                    CursorPosition(0, 0);
+
+                DrawHp(playerHp);
+                DrawBomb(bombCount);
+                DrawScore(score);
+                CursorPosition(0, 0);
                     for (int y = 0; y < 50; y++)
                     {
-                        for (int x = 0; x < 40; x++)
+                        for (int x = 0; x < 32; x++)
                         {
                             if (x == 31 && y < 41)
                             {
@@ -143,7 +200,7 @@ namespace ConsoleApp1
                                 Console.Write("──");
                                 continue;
                             }
-                            if(y==41&&x == 31)
+                            if (y == 41 && x == 31)
                             {
                                 Console.Write("┘");
                             }
@@ -165,8 +222,30 @@ namespace ConsoleApp1
                             foreach (var enemy in enemyList)
                             {
                                 board[enemy.enemyPos_Y, enemy.enemyPos_X] = ENEMY;
+                            if (enemy.enemyPos_Y > 1)
+                            {
+                                
+                            board[enemy.enemyPos_Y - 1, enemy.enemyPos_X] = ENEMY_WING;
+
                             }
-                            foreach (var boss in bossList)
+                            if (enemy.enemyPos_Y > 2)
+                            {
+
+                                board[enemy.enemyPos_Y - 2, enemy.enemyPos_X] = ENEMY_WING;
+
+                            }
+                            if (enemy.enemyPos_X>1)
+                            {
+                            board[enemy.enemyPos_Y - 1, enemy.enemyPos_X-1] = ENEMY_WING;
+
+                            }
+                            if(enemy.enemyPos_X<29)
+                            {
+                            board[enemy.enemyPos_Y - 1, enemy.enemyPos_X+1] = ENEMY_WING;
+
+                            }
+                        }
+                        foreach (var boss in bossList)
                             {
                                 board[boss.boss_Y, boss.boss_X] = BOSS;
                             }
@@ -174,9 +253,25 @@ namespace ConsoleApp1
                             {
                                 board[powerItem.item_Y, powerItem.item_X] = POWER;
                             }
-                            foreach(var bossBullet in bossBulletList)
+                            foreach (var bossBullet in bossBulletList)
                             {
                                 board[bossBullet.Y, bossBullet.X] = BOSS_BULLET;
+                            }
+                            foreach (var lArm in bossL_armList)
+                            {
+                                board[lArm.boss_Y, lArm.boss_X] = BOSS_LEFT_ARM;
+                            }
+                            foreach (var rArm in bossR_armList)
+                            {
+                                board[rArm.boss_Y, rArm.boss_X] = BOSS_RIGHT_ARM;
+                            }
+                            foreach(var lbullet in leftArmBulletList)
+                            {
+                                board[lbullet.Y, lbullet.X] = LEFT_ARM_BULLET;
+                            }
+                            foreach(var rbullet in rightArmBulletlist)
+                            {
+                                board[rbullet.Y,rbullet.X]= RIGHT_ARM_BULLET;
                             }
 
                             if (unitType == P_38)
@@ -261,14 +356,26 @@ namespace ConsoleApp1
                             }
                             else if (board[y, x] == BOSS)
                             {
-                               
+
                                 Console.ForegroundColor = ConsoleColor.Blue;
                                 Console.Write("▣");
                                 Console.ResetColor();
                             }
+                            else if (board[y, x] == BOSS_LEFT_ARM)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                Console.Write("▩");
+                                Console.ResetColor();
+                            }
+                            else if (board[y, x] == BOSS_RIGHT_ARM)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.Write("○");
+                                Console.ResetColor();
+                            }
                             else if (board[y, x] == ENEMY)
                             {
-                                Console.ForegroundColor = ConsoleColor.DarkGray;
+                                Console.ForegroundColor = ConsoleColor.DarkRed;
                                 Console.Write("▼");
                                 Console.ResetColor();
                             }
@@ -284,7 +391,12 @@ namespace ConsoleApp1
                                 Console.Write("Ｂ");
                                 Console.ResetColor();
                             }
-
+                            else if (board[y,x]==ENEMY_WING)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                            Console.Write("■");
+                            Console.ResetColor();
+                        }
                             else if (board[y, x] == PLAYER_WING)
                             {
                                 if (isGodMod == true)
@@ -308,7 +420,7 @@ namespace ConsoleApp1
                                 }
                                 if (board[pos_Y + 2, pos_X - 1] == PLAYER_WING && x < pos_X && unitType == J7W_SHINDEN)
                                 {
-                                    Console.ForegroundColor= ConsoleColor.DarkGreen;
+                                    Console.ForegroundColor = ConsoleColor.DarkGreen;
                                     Console.Write("◀");
                                     Console.ResetColor();
 
@@ -332,7 +444,7 @@ namespace ConsoleApp1
                                 Console.Write("●");
                                 Console.ResetColor();
                             }
-                            else if (board[y,x]== BOSS_BULLET)
+                            else if (board[y, x] == BOSS_BULLET)
                             {
                                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                                 Console.Write("◆");
@@ -345,6 +457,19 @@ namespace ConsoleApp1
                                 Console.WriteLine("※");
                                 Console.ResetColor();
                             }
+                            else if (board[y,x]==LEFT_ARM_BULLET)
+                            {
+                                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                                Console.Write("♨");
+                                Console.ResetColor();
+
+                            }
+                            else if (board[y,x]==RIGHT_ARM_BULLET)
+                            {
+                                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                                Console.Write("♥");
+                                Console.ResetColor();
+                            }
                             else if (board[y, x] == 0)
                             {
 
@@ -355,65 +480,65 @@ namespace ConsoleApp1
                         Console.WriteLine();
 
                     }
-                    CursorPosition(0, 42);
-                    Console.Write("체력 {0} 폭탄 {1} 파워 {2}", playerHp, bombCount, powerCount);
-                    CursorPosition(0, 43);
-                    Console.Write("보스체력 {0}        ", bossHp);
+                    //CursorPosition(0, 42);
+                    //Console.Write("체력 {0} 폭탄 {1} 파워 {2}", playerHp, bombCount, powerCount);
+                    //CursorPosition(0, 43);
+                    //Console.Write("보스체력 {0}        ", bossHp);
+                    
 
-
-                    if(clearEnemy==true)
+                    if (clearEnemy == true)
                     {
-                        
-                    if (enemyList.Count < 6)
-                    {
-                        if (enemySpawnTimer == 0 && enemyList.Count == 0)
+                     enemyPatern = rnd.Next(5);
+                     if (enemyList.Count < 6)
                         {
-                            enemySpawnTimer = System.Environment.TickCount;
-                        }
+                            if (enemySpawnTimer == 0 && enemyList.Count == 0)
+                            {
+                                enemySpawnTimer = System.Environment.TickCount;
+                            }
 
-                        enemySpawnCheck = System.Environment.TickCount;
-                        if (enemySpawnCheck - enemySpawnTimer <= 500)
-                        {
+                            enemySpawnCheck = System.Environment.TickCount;
+                            if (enemySpawnCheck - enemySpawnTimer <= 500)
+                            {
 
+                            }
+                            else
+                            {
+                                randE_X = rnd.Next(1, 29);
+                                randE_Y = rnd.Next(1, 10);
+                                //     if(randE_X < 3)
+                                //     {
+                                //         enemyList.Add(new Enemy(randE_X+1, randE_Y));
+                                //         enemyList.Add(new Enemy(randE_X+2, randE_Y));
+
+
+
+                                //     }
+                                //     else if(randE_X > 27)
+                                //     {
+                                //         enemyList.Add(new Enemy(randE_X-1, randE_Y));
+                                //         enemyList.Add(new Enemy(randE_X-2, randE_Y));
+
+
+                                //     }
+                                //     else
+                                //     {
+                                //         enemyList.Add(new Enemy(randE_X - 1, randE_Y));
+                                //         enemyList.Add(new Enemy(randE_X +1, randE_Y));
+
+                                //     }
+                                enemyList.Add(new Enemy(randE_X, randE_Y));
+                                enemyBulletList.Add(new Bullet(randE_X, randE_Y + 1));
+                                enemySpawnTimer = 0;
+                            }
                         }
                         else
-                        {
-                            randE_X = rnd.Next(1, 29);
-                            randE_Y = rnd.Next(1, 10);
-                            //     if(randE_X < 3)
-                            //     {
-                            //         enemyList.Add(new Enemy(randE_X+1, randE_Y));
-                            //         enemyList.Add(new Enemy(randE_X+2, randE_Y));
-
-
-
-                            //     }
-                            //     else if(randE_X > 27)
-                            //     {
-                            //         enemyList.Add(new Enemy(randE_X-1, randE_Y));
-                            //         enemyList.Add(new Enemy(randE_X-2, randE_Y));
-
-
-                            //     }
-                            //     else
-                            //     {
-                            //         enemyList.Add(new Enemy(randE_X - 1, randE_Y));
-                            //         enemyList.Add(new Enemy(randE_X +1, randE_Y));
-
-                            //     }
-                            enemyList.Add(new Enemy(randE_X, randE_Y));
-                            enemyBulletList.Add(new Bullet(randE_X, randE_Y + 1));
-                            enemySpawnTimer = 0;
-                        }
-                    }
-                    else
                         {
                             clearEnemy = false;
                         }
                     }
                     for (int j = enemyBulletList.Count - 1; j >= 0; j--)
                     {
-                       
+
                         var eBullet = enemyBulletList[j];
                         if (eBullet.bulletTimer == 0)
                         {
@@ -426,25 +551,36 @@ namespace ConsoleApp1
                         }
                         else
                         {
-                            //if (eBullet.X > pos_X)
-                            //{
-                            //    eBullet.X -= 1;
-                            //}
-                            //else
-                            //{
-                            //    eBullet.X += 1;
-                            //}
-                            //총알이 따라다니는기믹
+                        //if(enemyPatern==1||enemyPatern==2)
+                        //{
 
-                            eBullet.Y += 1;
+                        ////총알이 따라다니는기믹
+                        //if (eBullet.X > pos_X)
+                        //{
+                        //    eBullet.X -= 1;
+                        //}
+                        //else
+                        //{
+                        //    eBullet.X += 1;
+                        //}
+                        //}
+                        // if(enemyPatern==3&&eBullet.Y>20)
+                        //{
+                        //    eBullet.X -= 1;
+                        //}
+                        //else if(enemyPatern==4)
+                        //{
+                        //    eBullet.X += 1;
+                        //}
+                        
+                        eBullet.Y += 1;
+                            
+                        
+
                             eBullet.bulletTimer = 0;
                         }
 
-                        if (eBullet.Y > 39 || eBullet.X < 1 || eBullet.X > 29)
 
-                        {
-                            enemyBulletList.RemoveAt(j);
-                        }
 
                         if (board[eBullet.Y, eBullet.X] == PLAYER_WING || eBullet.X == pos_X && eBullet.Y == pos_Y)
                         {
@@ -455,7 +591,7 @@ namespace ConsoleApp1
                                 Console.Beep();
                                 Console.Beep();
                                 Console.Beep();
-                                
+
                                 powerCount = 0;
                                 currentTick = System.Environment.TickCount;
                                 if (currentTick - respawnWaitTime <= 200)
@@ -476,6 +612,12 @@ namespace ConsoleApp1
                             }
 
                         }
+                        else if (eBullet.Y > 39 || eBullet.X < 1 || eBullet.X > 29)
+
+                        {
+                            enemyBulletList.RemoveAt(j);
+                        }
+                        
                     }
 
                     if (bossHp <= 0)
@@ -483,6 +625,31 @@ namespace ConsoleApp1
                         bossClear = true;
                         bossList.Clear();
                     }
+                    if (leftArm_hp <= 0)
+                    {
+                    leftArm_hp = 0;
+                        bossL_armList.Clear();
+                    leftarmBreak = true;
+                    leftarmcount += 1;
+                     }
+                    if (rightArm_hp <= 0)
+                    {
+                    rightArm_hp = 0;
+                        bossR_armList.Clear();
+                        rightarmBreak = true;
+                    rightarmcount += 1;
+                    }
+                if (rightarmBreak == true&&rightarmcount==1)
+                {
+                    score += 15000;
+                    rightarmBreak=false;
+
+                }
+                    if(leftarmBreak == true&&leftarmcount==1)
+                { 
+                    score += 15000;
+                    leftarmBreak=false;
+                }
                     //for(int i=enemyList.Count-1;i>=0;i--)
                     //{
                     //    var enemy = enemyList[i];
@@ -498,6 +665,10 @@ namespace ConsoleApp1
 
                                 bombCount += 1;
                             }
+                            else
+                        {
+                            score += 1500;
+                        }
                             bombList.RemoveAt(i);
                         }
                         if (itemTimer == 0)
@@ -522,18 +693,35 @@ namespace ConsoleApp1
                         }
                     }
 
-                    for (int k = bossBulletList.Count - 1; k >= 0; k--)
+                    for (int k = bossBulletList.Count - 1; k >= 0; k--)//보스총움직임
                     {
                         var bossBullet = bossBulletList[k];
                         if (bossBullet.X > BOSS_CENTER_X)
                         {
+                            if (bossBullet.Y % 4 == 0)
+                            {
+                                bossBullet.X += 1;
 
+                            }
+                        }
+                        else if (bossBullet.X > BOSS_CENTER_X && bossBullet.Y >= bossCenter_Y)
+                        {
                             bossBullet.X += 1;
                         }
                         if (bossBullet.X < BOSS_CENTER_X)
                         {
+
+                            if (bossBullet.Y % 4 == 0)
+                            {
+
+                                bossBullet.X -= 1;
+                            }
+                        }
+                        else if (bossBullet.X < BOSS_CENTER_X && bossBullet.Y >= bossCenter_Y)
+                        {
                             bossBullet.X -= 1;
                         }
+
                         if (bossBullet.Y > BOSS_CENTER_Y)
                         {
                             bossBullet.Y += 1;
@@ -546,6 +734,7 @@ namespace ConsoleApp1
                         {
                             bossBulletList.RemoveAt(k);
                         }
+
 
                         if (board[bossBullet.Y, bossBullet.X] == PLAYER_WING || bossBullet.X == pos_X && bossBullet.Y == pos_Y)
                         {
@@ -570,7 +759,53 @@ namespace ConsoleApp1
                                 {
                                     respawnTick = 0;
 
-                                    
+
+                                    pos_X = 15;
+                                    pos_Y = 35;
+                                    isGodMod = true;
+
+                                }
+
+                            }
+                        }
+
+                    }//보스총알 움직임
+                    for (int i = leftArmBulletList.Count - 1; i >= 0; i--)
+                    {
+                        var leftbullet = leftArmBulletList[i];
+                        if (leftbullet.Y > BOSS_L_ARM_CENTER_Y)
+                        {
+                            leftbullet.Y += 1;
+                        }
+
+                        if (leftbullet.Y > 39)
+                        {
+                            leftArmBulletList.RemoveAt(i);
+                        }
+                        if (board[leftbullet.Y, leftbullet.X] == PLAYER_WING || leftbullet.X == pos_X && leftbullet.Y == pos_Y)
+                        {
+                            if (isGodMod == false)
+                            {
+                                playerHp -= 1;
+                                Console.Beep();
+                                Console.Beep();
+                                Console.Beep();
+
+                                powerCount = 0;
+                                if (respawnTick == 0)
+                                {
+                                    respawnTick = System.Environment.TickCount;
+                                }
+                                currentTick = System.Environment.TickCount;
+                                if (currentTick - respawnWaitTime <= 200)
+                                {
+
+                                }
+                                else
+                                {
+                                    respawnTick = 0;
+
+
                                     pos_X = 15;
                                     pos_Y = 35;
                                     isGodMod = true;
@@ -580,24 +815,127 @@ namespace ConsoleApp1
                             }
                         }
                     }
-
-                    if (bossBulletList.Count == 0 && countEnemy >= 30)
+                    for(int i=rightArmBulletlist.Count-1; i>=0;i--)
                     {
-                        bossBulletList.Add(new Bullet(BOSS_CENTER_X - 1, BOSS_CENTER_Y));
-                        bossBulletList.Add(new Bullet(BOSS_CENTER_X + 1, BOSS_CENTER_Y));
-                        bossBulletList.Add(new Bullet(BOSS_CENTER_X + 1, BOSS_CENTER_Y + 1));
-                        bossBulletList.Add(new Bullet(BOSS_CENTER_X + 1, BOSS_CENTER_Y - 1));
-                        bossBulletList.Add(new Bullet(BOSS_CENTER_X - 1, BOSS_CENTER_Y - 1));
-                        bossBulletList.Add(new Bullet(BOSS_CENTER_X - 1, BOSS_CENTER_Y + 1));
-                        bossBulletList.Add(new Bullet(BOSS_CENTER_X, BOSS_CENTER_Y - 1));
-                        bossBulletList.Add(new Bullet(BOSS_CENTER_X, BOSS_CENTER_Y + 1));
+                        var rightBullet = rightArmBulletlist[i];
+                      if(rightBullet.Y>BOSS_R_ARM_Y_B)
+                    {
+                            rightBullet.Y += 1;
+
+                    }
+                        
+                        if(rightBullet.Y>39)
+                        {
+                            rightArmBulletlist.RemoveAt(i);
+                        }
+                        if (board[rightBullet.Y, rightBullet.X] == PLAYER_WING || rightBullet.X == pos_X && rightBullet.Y == pos_Y)
+                        {
+                            if (isGodMod == false)
+                            {
+                                playerHp -= 1;
+                                Console.Beep();
+                                Console.Beep();
+                                Console.Beep();
+
+                                powerCount = 0;
+                                if (respawnTick == 0)
+                                {
+                                    respawnTick = System.Environment.TickCount;
+                                }
+                               
+                                if (currentTick - respawnWaitTime <= 200)
+                                {
+
+                                }
+                                else
+                                {
+                                    respawnTick = 0;
+
+
+                                    pos_X = 15;
+                                    pos_Y = 35;
+                                    isGodMod = true;
+
+                                }
+
+                            }
+                        }
+
+
+                    }
+
+                    if (bossBulletList.Count == 0 && countEnemy >= 50)
+                    {
+                        if (bossBulletTimer == 0)
+                        {
+                            bossBulletTimer = System.Environment.TickCount;
+                        }
+                        //bossBulletCheck = System.Environment.TickCount;
+                        if (currentTick - bossBulletTimer <= 500)
+                        {
+
+                        }
+                        else
+                        {
+                            bossBulletTimer = 0;
+
+                            bossBulletList.Add(new Bullet(BOSS_CENTER_X + 1, BOSS_CENTER_Y + 1));
+
+                            bossBulletList.Add(new Bullet(BOSS_CENTER_X - 1, BOSS_CENTER_Y + 1));
+
+                            bossBulletList.Add(new Bullet(BOSS_CENTER_X, BOSS_CENTER_Y + 1));
+                        }
+
+                    }
+                    if (leftArmBulletList.Count == 0 && countEnemy >= 50&&leftArm_hp>0)
+                    {
+                        if (leftArmTimer == 0)
+                        {
+                            leftArmTimer = System.Environment.TickCount;
+                        }
+                        
+                        if (currentTick - leftArmTimer <= 1000)
+                        {
+
+                        }
+                        else
+                        {
+                            leftArmTimer = 0;
+                            leftArmBulletList.Add(new Bullet(BOSS_L_ARM_CENTER_X, BOSS_L_ARM_Y_B + 1));
+                            leftArmBulletList.Add(new Bullet(BOSS_L_ARM_CENTER_X, BOSS_L_ARM_Y_B + 2));
+                        leftArmBulletList.Add(new Bullet(BOSS_L_ARM_CENTER_X-1, BOSS_L_ARM_Y_B + 1));
+                        leftArmBulletList.Add(new Bullet(BOSS_L_ARM_CENTER_X-1, BOSS_L_ARM_Y_B + 2));
+
+
+                    }
+                }
+                    if(rightArmBulletlist.Count== 0 && countEnemy >= 50&&rightArm_hp>0)
+                    {
+                        if(rightArmTimer == 0)
+                        {
+                            rightArmTimer = System.Environment.TickCount;
+                        }
+                       
+                        if(currentTick - rightArmCheck <= 3000) 
+                        {
+
+                        }
+                        else
+                        {
+                            rightArmTimer = 0;
+                            rightArmBulletlist.Add(new Bullet(BOSS_R_ARM_CENTER_X, BOSS_R_ARM_Y_B + 1));
+                            rightArmBulletlist.Add(new Bullet(BOSS_R_ARM_CENTER_X, BOSS_R_ARM_Y_B + 2));
+                        rightArmBulletlist.Add(new Bullet(BOSS_R_ARM_CENTER_X, BOSS_R_ARM_Y_B + 3));
+                        rightArmBulletlist.Add(new Bullet(BOSS_R_ARM_CENTER_X, BOSS_R_ARM_Y_B + 4));
+
+                    }
                     }
 
 
 
                     if (playerHp == 0)
                     {
-                        
+
                         ClearBuffer();
                         gameOver.OverDisplay();
                         playerHp = 3;
@@ -620,7 +958,7 @@ namespace ConsoleApp1
                         CursorPosition(0, 40);
                         if (respawnTimeCheck - respawnTick <= 3000)
                         {
-                            Console.WriteLine("무적");
+                           
 
                         }
                         else
@@ -633,8 +971,39 @@ namespace ConsoleApp1
                     }
                     for (int i = enemyList.Count - 1; i >= 0; i--)
                     {
-                        var enemy = enemyList[i];
+                    
+                    var enemy = enemyList[i];
+                    if (board[enemy.enemyPos_Y, enemy.enemyPos_X] == PLAYER_WING || enemy.enemyPos_X == pos_X && enemy.enemyPos_Y == pos_Y)
+                    {
+                        if (isGodMod == false)
+                        {
+                            playerHp -= 1;
+                            Console.Beep();
+                            Console.Beep();
+                            Console.Beep();
 
+                            powerCount = 0;
+                            if (respawnTick == 0)
+                            {
+                                respawnTick = System.Environment.TickCount;
+                            }
+
+                            if (currentTick - respawnWaitTime <= 200)
+                            {
+
+                            }
+                            else
+                            {
+                                respawnTick = 0;
+
+
+                                pos_X = 15;
+                                pos_Y = 35;
+                                isGodMod = true;
+
+                            }
+                        }
+                    }
                         if (enemy.spawnTimer == 0)
                         {
                             enemy.spawnTimer = System.Environment.TickCount;
@@ -647,18 +1016,59 @@ namespace ConsoleApp1
                         else
                         {
                             enemy.spawnTimer = 0;
+
+
                             
-
-
+                            if(enemyPatern == 0)
+                        {
+                            enemyBottom = true;
+                            enemyLeft = false;
+                            enemyRight = false;
+                        }
+                            else if(enemyPatern==1)
+                        {
+                            enemyLeft = true;
+                            enemyRight = false;
+                            enemyBottom = false;
+                        }
+                            else if(enemyPatern==2)
+                        {
+                            enemyRight = true;
+                            enemyBottom = false;
+                            enemyLeft = false;
+                        }
+                            else if(enemyPatern==3)
+                        {
+                            enemyRight = true;
+                            enemyBottom = true;
+                            enemyLeft=false;
+                        }
+                            else if(enemyPatern==4)
+                        {
+                            enemyRight = false;
+                            enemyBottom = true;
+                            enemyLeft = true;
+                        }
+                            if(enemyBottom==true)
+                        {
                             enemy.enemyPos_Y += 1;
+
+                        }
+                            if(enemyLeft==true)
+                        {
+                            enemy.enemyPos_X -= 1;
+                        }
+                            if(enemyRight==true)
+                        {
+                            enemy.enemyPos_X += 1;
+                        }
 
                         }
                         if (hardMode == true)
                         {
                             enemy.enemyPos_X -= 1;
                         }
-                        if (i % 5 == 0)
-                        {
+                        
                             for (int powerup = powerList.Count - 1; powerup >= 0; powerup--)
                             {
                                 var dropItem = powerList[powerup];
@@ -682,6 +1092,14 @@ namespace ConsoleApp1
                                     pos_X - 1 == dropItem.item_X && pos_Y + 1 == dropItem.item_Y || pos_X == dropItem.item_X && pos_Y + 2 == dropItem.item_Y)
                                 {
                                     powerCount += 1;
+                                    if(powerCount>=2)
+                                {
+                                    score += 4000;
+                                }
+                                else 
+                                {
+                                    score += 2000;
+                                }
                                     powerList.RemoveAt(powerup);
 
                                 }
@@ -691,7 +1109,7 @@ namespace ConsoleApp1
                                 }
 
                             }
-                        }
+                        
 
                         if (enemy.enemyPos_X < 1 || enemy.enemyPos_X > 30 || enemy.enemyPos_Y > 39)
                         {
@@ -756,11 +1174,12 @@ namespace ConsoleApp1
                             }
                         }
                     }
-                    
+
                     for (int i = playerBulletList.Count - 1; i >= 0; i--)//플레이어 사격
                     {
                         if (autoFire == true)
                         {
+                        currentTick= System.Environment.TickCount;  
                             if (currentTick - autoFireTick <= 300)
                             {
 
@@ -796,7 +1215,7 @@ namespace ConsoleApp1
                                             }
                                             else if (unitType == J7W_SHINDEN)
                                             {
-                                               // playerBulletList.Add(new Bullet(pos_X, pos_Y - shootCount - shootDelay));
+                                                // playerBulletList.Add(new Bullet(pos_X, pos_Y - shootCount - shootDelay));
                                                 playerBulletList.Add(new Bullet(pos_X, pos_Y - shootCount - shootDelay - 1));
 
                                             }
@@ -867,21 +1286,8 @@ namespace ConsoleApp1
                         }
 
                         var bullet = playerBulletList[i];
-                        if(bossClear==false)
-                        {
-
-                        for (int l = bossList.Count - 1; l >= 0; l--)
-                            {
-                                var boss = bossList[l];
-
-
-
-                               
-                           
-
-
-                        }
-                        }
+                        
+                        
 
                         if (bullet.X < 1 || bullet.X > 30 || bullet.Y > 49 || bullet.Y < 1)
                         {
@@ -889,7 +1295,7 @@ namespace ConsoleApp1
                         }
                         if (bossList.Count != 0)
                         {
-                            if (bullet.X > BOSS_LEFT_X && bullet.X < BOSS_RIGHT_X && bullet.Y == BOSS_BOTTOM_Y)
+                            if (bullet.X > boss_L_X && bullet.X < boss_R_X && bullet.Y == boss_B_Y)
                             {
 
                                 bossHp -= 50;
@@ -900,8 +1306,26 @@ namespace ConsoleApp1
                                 playerBulletList.RemoveAt(i);
 
                             }
-                            
-                            
+                            if (bullet.X > BOSS_L_ARM_X_L && bullet.X < BOSS_L_ARM_X_R && bullet.Y == BOSS_L_ARM_Y_B&&leftArm_hp>=0)
+                            {
+                                leftArm_hp -= 50;
+                                if (unitType == J7W_SHINDEN)
+                                {
+                                    leftArm_hp -= 20;
+                                }
+                                playerBulletList.RemoveAt(i);
+                            }
+                            if (bullet.X > BOSS_R_ARM_X_L && bullet.X < BOSS_R_ARM_X_R && bullet.Y == BOSS_R_ARM_Y_B&&rightArm_hp>=0)
+                            {
+                                rightArm_hp -= 50;
+                                if (unitType == J7W_SHINDEN)
+                                {
+                                    rightArm_hp -= 20;
+                                }
+                                playerBulletList.RemoveAt(i);
+                            }
+
+
 
                         }
 
@@ -978,6 +1402,7 @@ namespace ConsoleApp1
 
                         for (int j = enemyList.Count - 1; j >= 0; j--)
                         {
+                        
                             var enemy = enemyList[j];
 
                             if (bullet.Y == enemy.enemyPos_Y && bullet.X == enemy.enemyPos_X)
@@ -1001,14 +1426,24 @@ namespace ConsoleApp1
                                         powerList.Add(new PowerUP(enemy.enemyPos_X, enemy.enemyPos_Y + 1));
 
                                     }
-                                    if (bombList.Count == 0)
-                                    {
-                                        bombList.Add(new Bomb(enemy.enemyPos_X, enemy.enemyPos_Y + 2));
+                                    //if (bombList.Count == 0)
+                                    //{
+                                    //    bombList.Add(new Bomb(enemy.enemyPos_X, enemy.enemyPos_Y + 2));
 
+                                    //}
+                                for (int k = 0; k < enemyList.Count; k++)
+                                {
+                                    if (k != j && bombList.Count == 0&&enemyList[k].enemyHp<=0)
+                                    {
+                                        bombList.Add(new Bomb(enemyList[k].enemyPos_X, enemyList[k].enemyPos_Y + 2));
+                                        break; // Generate bomb for only one enemy
                                     }
-                                    
-                                    enemyList.RemoveAt(j);
+                                }
+                                enemyList.RemoveAt(j);
+                               
                                     countEnemy += 1;
+
+                                
                                     enemySpawnTimer = 0;
                                     score += 1000;
                                     bombPer = rnd.Next(0, 100);
@@ -1017,9 +1452,9 @@ namespace ConsoleApp1
                                         bomb_X = enemy.enemyPos_X;
                                         bomb_Y = enemy.enemyPos_Y + 10;
                                     }
-                                    
+
                                 }
-                               
+
                             }
                         }
 
@@ -1038,74 +1473,96 @@ namespace ConsoleApp1
                         playerBulletList.Clear();
                         enemyBulletList.Clear();
                         bossBulletList.Clear();
-                        
-                        if(pos_X>15)
+                        rightArmBulletlist.Clear();
+                    leftArmBulletList.Clear();
+                        bossR_armList.Clear();
+                        bossL_armList.Clear();
+                    
+                        if (pos_X > 15)
                         {
                             pos_X -= 1;
                             Thread.Sleep(50);
                         }
-                        else if(pos_X<15)
+                        else if (pos_X < 15)
                         {
                             pos_X += 1;
                             Thread.Sleep(50);
                         }
-                        if(pos_X==15)
+                        if (pos_X == 15)
                         {
                             pos_Y -= 1;
                             Thread.Sleep(50);
 
                         }
-                        if(pos_Y==1)
+                        if (pos_Y == 1)
                         {
-
-                        break;
+                            Console.Clear();
+                            break;
                         }
                     }
-                    if (countEnemy == 30)
+                    if (countEnemy == 50)
                     {
                         bossOn = true;
                     }
                     if (bossOn == true)
                     {
-                        for (int y = BOSS_TOP_Y; y < BOSS_BOTTOM_Y; y++)
+                        for (int y = boss_T_Y; y < boss_B_Y; y++)
                         {
-                            for (int x = BOSS_LEFT_X; x < BOSS_RIGHT_X; x++)
+                            for (int x = boss_L_X; x < boss_R_X; x++)
                             {
+
                                 bossList.Add(new Boss(x, y));
+
+
                             }
 
                         }
+                        for (int y = BOSS_L_ARM_Y_T; y < BOSS_L_ARM_Y_B; y++)
+                        {
+                            for (int x = BOSS_L_ARM_X_L; x < BOSS_L_ARM_X_R; x++)
+                            {
+                                bossL_armList.Add(new Boss(x, y));
+                            }
+                        }
+                        for (int y = BOSS_R_ARM_Y_T; y < BOSS_R_ARM_Y_B; y++)
+                        {
+                            for (int x = BOSS_R_ARM_X_L; x < BOSS_R_ARM_X_R; x++)
+                            {
+                                bossR_armList.Add(new Boss(x, y));
+                            }
+                        }
                         bossOn = false;
-                        
+
                     }
-                    CursorPosition(0, 45);
-                    Console.Write("SCORE {0}         ", score);
+
+                    //CursorPosition(60, 1);
+                    //Console.Write("SCORE {0}         ", score);
                     //CursorPosition(0, 61);
                     //Console.WriteLine("BombCount {0}", bombCount);
-                    if (unitType == P_38)
-                    {
-                        CursorPosition(0, 46);
-                        Console.Write("유닛 타입 : P_38");
+                    //if (unitType == P_38)
+                    //{
+                    //    CursorPosition(0, 46);
+                    //    Console.Write("유닛 타입 : P_38");
 
-                    }
-                    else if (unitType == SPITFIRE)
-                    {
-                        CursorPosition(0, 46);
-                        Console.Write("유닛 타입 : SPITFIRE");
-                    }
-                    else if (unitType == J7W_SHINDEN)
-                    {
-                        CursorPosition(0, 46);
-                        Console.Write("유닛 타입 : J7W_SHINDEN");
-                    }
-                    else
-                    {
-                        CursorPosition(0, 46);
+                    //}
+                    //else if (unitType == SPITFIRE)
+                    //{
+                    //    CursorPosition(0, 46);
+                    //    Console.Write("유닛 타입 : SPITFIRE");
+                    //}
+                    //else if (unitType == J7W_SHINDEN)
+                    //{
+                    //    CursorPosition(0, 46);
+                    //    Console.Write("유닛 타입 : J7W_SHINDEN");
+                    //}
+                    //else
+                    //{
+                    //    CursorPosition(0, 46);
 
-                        Console.Write("버그");
-                    }
-                    CursorPosition(0, 47);
-                    Console.Write("처치한 적 {0}",countEnemy);
+                    //    Console.Write("버그");
+                    //}
+                    //CursorPosition(0, 47);
+                    //Console.Write("처치한 적 {0}", countEnemy);
 
 
                     //Thread.Sleep(10);
@@ -1117,8 +1574,8 @@ namespace ConsoleApp1
                             bombTimer = System.Environment.TickCount;
 
                         }
-                        bombTimerCheck = System.Environment.TickCount;
-                        if (bombTimerCheck - bombTimer <= 800)
+                        
+                        if (currentTick - bombTimer <= 800)
                         {
 
                         }
@@ -1138,8 +1595,16 @@ namespace ConsoleApp1
                             pos_X += move_X;
 
                         }
-                    }
-                    if ((GetKeyState((int)ConsoleKey.RightArrow) & 0x8000) != 0)
+                    CursorPosition(66, 4);
+                    Console.Write("◀");
+                }
+                    else
+                {
+                    CursorPosition(66, 4);
+                    Console.Write("  ");
+                }
+               
+                if ((GetKeyState((int)ConsoleKey.RightArrow) & 0x8000) != 0)
                     {
                         if (pos_X < 29)
                         {
@@ -1147,8 +1612,16 @@ namespace ConsoleApp1
                             pos_X += move_X;
 
                         }
-                    }
-                    if ((GetKeyState((int)ConsoleKey.UpArrow) & 0x8000) != 0)
+                    CursorPosition(74, 4);
+                    Console.Write("▶");
+                }
+                else
+                {
+                    CursorPosition(74, 4);
+                    Console.Write("  ");
+                }
+                
+                if ((GetKeyState((int)ConsoleKey.UpArrow) & 0x8000) != 0)
                     {
                         if (pos_Y > 1)
                         {
@@ -1156,8 +1629,16 @@ namespace ConsoleApp1
                             pos_Y += move_Y;
 
                         }
-                    }
-                    if ((GetKeyState((int)ConsoleKey.DownArrow) & 0x8000) != 0)
+                    CursorPosition(70, 2);
+                    Console.Write("▲");
+                }
+                else
+                {
+                    CursorPosition(70, 2);
+                    Console.Write("  ");
+                }
+                
+                if ((GetKeyState((int)ConsoleKey.DownArrow) & 0x8000) != 0)
                     {
                         if (pos_Y < 39)
                         {
@@ -1165,15 +1646,74 @@ namespace ConsoleApp1
                             pos_Y += move_Y;
 
                         }
-                    }
+                    CursorPosition(70, 4);
+                    Console.Write("▼");
+                }
+                else
+                {
+                    CursorPosition(70, 4);
+                    Console.Write("  ");
+                }
+                if((GetKeyState((int)ConsoleKey.Z) &0x8000)!=0)
+                {
+                    CursorPosition(65, 9);
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.Write("Ｚ");
+                    Console.ResetColor();
+                    
+                }
+                else
+                {
+                    CursorPosition(65, 9);
+                    Console.ResetColor();
+                    Console.Write("Ｚ");
+                }
+                if((GetKeyState((int)ConsoleKey.X) &0x8000)!=0)
+                {
+                    CursorPosition(65, 12);
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.Write("Ｘ");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    CursorPosition(65, 12);
+                    Console.ResetColor();
+                    Console.Write("Ｘ");
+                }
+                    CursorPosition(69, 9);
+                Console.Write("총알 발사");
+                CursorPosition(69, 12);
+                    Console.Write("폭탄 사용");
+                if(autoFire)
+                {
+                    CursorPosition(65, 15);
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.Write("Ａ  오토파이어");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    CursorPosition(65, 15);
+                    Console.Write("Ａ  오토파이어");
+                    Console.ResetColor();
+                }
+                
+               
 
-                    if(!bossClear)
+
+
+
+                if (!bossClear)
                     {
 
                         if (Console.KeyAvailable)
                         {
 
-                            inputKey = Console.ReadKey(true);
+                            inputKey = Console.ReadKey(false);
 
                             switch (inputKey.Key)
                             {
@@ -1219,8 +1759,9 @@ namespace ConsoleApp1
                                     break;
                                 case ConsoleKey.Z:
 
+                                
 
-                                    while (shootCount < 4)
+                                while (shootCount < 4)
                                     {
                                         if (pos_Y - shootCount - shootDelay > 5)
                                         {
@@ -1379,6 +1920,7 @@ namespace ConsoleApp1
                                     }
                                     if (isBomb_Explode == true && bombCount > 0 && unitType == P_38)
                                     {
+                                    bombCount -= 1;
                                         if (pos_X > 5 && pos_Y > 5)
                                         {
                                             for (int y = pos_Y - 5; y < pos_Y + 5; y++)
@@ -1498,11 +2040,11 @@ namespace ConsoleApp1
                         }//키입력
                     }
 
-                }
+               // }
             }
 
         }//main
-       
+
         public void CursorPosition(int x, int y)
         {
             Console.SetCursorPosition(x, y);
@@ -1516,15 +2058,35 @@ namespace ConsoleApp1
         }
         public void DrawHp(int hpC)
         {
+            if(unitType==P_38)
+            {
+                DrawP38();
+            }
+            else if(unitType==SPITFIRE)
+            {
+                DrawSpitfire();
+            }
+            else if(unitType==J7W_SHINDEN)
+            {
+                Drawj7w();
+            }
+            CursorPosition(9, 44);
+            Console.Write("Ｘ {0}",hpC);
 
         }
         public void DrawBomb(int bombC)
         {
-            
+            CursorPosition(15, 44);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("Ｂ");
+            Console.ResetColor();
+            CursorPosition(17, 44);
+            Console.Write("Ｘ {0}",bombC);
         }
         public void DrawScore(int scoreC)
         {
-
+            CursorPosition(25, 44);
+                Console.Write("SCORE {0}",scoreC);
         }
 
         public void DrawMove()
@@ -1534,13 +2096,13 @@ namespace ConsoleApp1
         public void DrawP38()
         {
             Console.ForegroundColor = ConsoleColor.Blue;
-            CursorPosition(14, 33);
+            CursorPosition(3, 43);
             Console.Write("  ▲  ");
             Console.ForegroundColor = ConsoleColor.Gray;
-            CursorPosition(14, 34);
+            CursorPosition(3, 44);
 
             Console.Write("■■■");
-            CursorPosition(14, 35);
+            CursorPosition(3, 45);
 
             Console.Write("  ■");
             Console.ResetColor();
@@ -1548,36 +2110,36 @@ namespace ConsoleApp1
         public void DrawSpitfire()
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            CursorPosition(36, 33);
+            CursorPosition(3, 43);
             Console.Write("■");
-            CursorPosition(38, 33);
+            CursorPosition(5, 43);
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.Write("▲");
-            CursorPosition(40, 33);
+            CursorPosition(7, 43);
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.Write("■");
-            CursorPosition(38, 34);
+            CursorPosition(5, 44);
             Console.Write("■");
-            CursorPosition(38, 35);
+            CursorPosition(5, 45);
             Console.Write("■");
             Console.ResetColor();
         }
         public void Drawj7w()
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            CursorPosition(59, 33);
+            CursorPosition(5, 43);
             Console.Write("∥");
-            CursorPosition(59, 34);
+            CursorPosition(5, 44);
             Console.Write("■");
-            CursorPosition(57, 35);
+            CursorPosition(3, 45);
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.Write("◀");
-            CursorPosition(59, 35);
+            CursorPosition(5, 45);
             Console.ForegroundColor = ConsoleColor.Green;
 
             Console.Write("■");
 
-            CursorPosition(61, 35);
+            CursorPosition(7, 45);
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.Write("▶");
             Console.ResetColor();
