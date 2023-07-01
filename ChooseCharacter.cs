@@ -65,6 +65,7 @@ namespace ConsoleApp1
                 
                 switch (selectInfo.Key)
                 {
+                    case ConsoleKey.Z:
                     case ConsoleKey.Enter:
                         if(cursorPos_x==16)
                         {
@@ -127,12 +128,16 @@ namespace ConsoleApp1
         }
         private void P38Info()
         {
+            Console.ForegroundColor = ConsoleColor.Blue;
+
             CursorPosition(10, 7);
             Console.Write("              ■■");
             CursorPosition(10, 8);
             Console.Write("            ■■■■");
             CursorPosition(10, 9);
             Console.Write("          ■■■■■■");
+            Console.ResetColor();
+            Console.ForegroundColor= ConsoleColor.Gray;
             CursorPosition(10, 10);
             Console.Write("          ■■■■■■");
             CursorPosition(10, 11);
@@ -142,15 +147,53 @@ namespace ConsoleApp1
             CursorPosition(10, 13);
             Console.Write("          ■■■■■■");
             CursorPosition(10, 14);
-            Console.Write("      ■■■■■■■■■■■■");
+            Console.ResetColor();
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("      ■");
+            Console.ResetColor();
+            CursorPosition(18, 14);
+            Console.ForegroundColor = ConsoleColor.Gray;
+
+            Console.Write("■■■■■■■■■■■");
             CursorPosition(10, 15);
-            Console.Write("  ■■■■■■■■■■■■■■■■■■          ■■");
+            Console.ForegroundColor = ConsoleColor.Blue;
+
+            Console.Write("  ■■■");
+            Console.ResetColor();
+
+            CursorPosition(18, 15);
+            Console.ForegroundColor = ConsoleColor.Gray;
+
+            Console.Write("■■■■■■■■■■■■■■■          ■■");
             CursorPosition(10, 16);
-            Console.Write("■■■■■■■■■■■■■■■■■■■■■■■■■■■");
+            Console.ForegroundColor = ConsoleColor.Blue;
+
+            Console.Write("■■■■");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Gray;
+
+            CursorPosition(18, 16);
+            Console.Write("■■■■■■■■■■■■■■■■■■■■■■■");
             CursorPosition(10, 17);
-            Console.Write("  ■■■■■■■■■■■■■■■■■■          ■■");
+            Console.ForegroundColor = ConsoleColor.Blue;
+
+            Console.Write("  ■■■");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Gray;
+
+            CursorPosition(18, 17);
+            Console.Write("■■■■■■■■■■■■■■■          ■■");
             CursorPosition(10, 18);
-            Console.Write("      ■■■■■■■■■■■■");
+            Console.ForegroundColor = ConsoleColor.Blue;
+
+            Console.Write("      ■");
+            Console.ResetColor();
+
+            CursorPosition(18, 18);
+            Console.ForegroundColor = ConsoleColor.Gray;
+
+            Console.Write("■■■■■■■■■■■");
             CursorPosition(10, 19);
             Console.Write("          ■■■■■■");
             CursorPosition(10, 20);
@@ -160,12 +203,16 @@ namespace ConsoleApp1
             CursorPosition(10, 22);
             Console.Write("          ■■■■■■ ");
             CursorPosition(10, 23);
+            Console.ForegroundColor = ConsoleColor.Blue;
+
             Console.Write("          ■■■■■■ ");
             CursorPosition(10, 24);
             Console.Write("            ■■■■ ");
             CursorPosition(10, 25);
             Console.Write("              ■■ ");
             CursorPosition(30, 26);
+            Console.ResetColor();
+
             Console.Write("       P 38");
             CursorPosition(30, 27);
             Console.Write("발사형식 : 스탠다드");
@@ -173,11 +220,14 @@ namespace ConsoleApp1
         }
         private void SpitfireInfo()
         {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+
             CursorPosition(10, 7);
             Console.Write("    ■■");
             CursorPosition(10, 8);
             Console.Write("    ■■■■");
             CursorPosition(10, 9);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.Write("    ■■■■■■");
             CursorPosition(10, 10);
             Console.Write("    ■■■■■■");
@@ -190,11 +240,29 @@ namespace ConsoleApp1
             CursorPosition(10, 14);
             Console.Write("    ■■■■■■■■■■■■■               ■■■■ ");
             CursorPosition(10, 15);
-            Console.Write("  ■■■■■■■■■■■■■■■■■■■■■■■");
+            Console.ForegroundColor= ConsoleColor.DarkYellow;
+            Console.Write("  ■■■");
+            CursorPosition(18, 15);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+
+            Console.Write("■■■■■■■■■■■■■■■■■■■■");
             CursorPosition(10, 16);
-            Console.Write("■■■■■■■■■■■■■■■■■■■■■■■");
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+
+            Console.Write("■■■■■");
+            CursorPosition(18, 16);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+
+            Console.Write("■■■■■■■■■■■■■■■■■■");
             CursorPosition(10, 17);
-            Console.Write("  ■■■■■■■■■■■■■■■■■■■■■■■");
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+
+            Console.Write("  ■■■");
+
+            CursorPosition(18, 17);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+
+            Console.Write("■■■■■■■■■■■■■■■■■■■■");
             CursorPosition(10, 18);
             Console.Write("    ■■■■■■■■■■■■■               ■■■■");
             CursorPosition(10, 19);
@@ -208,9 +276,12 @@ namespace ConsoleApp1
             CursorPosition(10, 23);
             Console.Write("    ■■■■■■ ");
             CursorPosition(10, 24);
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+
             Console.Write("    ■■■■ ");
             CursorPosition(10, 25);
             Console.Write("    ■■ ");
+            Console.ResetColor();
             CursorPosition(30, 26);
             Console.Write("     SPITFIRE");
             CursorPosition(30, 27);
@@ -218,6 +289,7 @@ namespace ConsoleApp1
         }
         private void J7WInfo()
         {
+            Console.ForegroundColor= ConsoleColor.DarkGreen;
             CursorPosition(10, 7);
             Console.Write("                                                  ■■");
             CursorPosition(10, 8);
@@ -235,12 +307,15 @@ namespace ConsoleApp1
             CursorPosition(10, 14);
             Console.Write("                                           ■■■■■ ");
             CursorPosition(10, 15);
+            Console.ForegroundColor=ConsoleColor.Green;
             Console.Write("                              ■■■■■■■■■■■■■");
             CursorPosition(10, 16);
             Console.Write("      ■■■■■■■■■■■■■■■■■■■■■■■");
             CursorPosition(10, 17);
             Console.Write("                              ■■■■■■■■■■■■■");
             CursorPosition(10, 18);
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+
             Console.Write("                                           ■■■■■");
             CursorPosition(10, 19);
             Console.Write("                                           ■■■■■");
@@ -256,6 +331,7 @@ namespace ConsoleApp1
             Console.Write("                                              ■■■■ ");
             CursorPosition(10, 25);
             Console.Write("                                                  ■■ ");
+            Console.ResetColor();
             CursorPosition(30, 26);
             Console.Write("   J7W SHINDEN");
             CursorPosition(30, 27);

@@ -14,23 +14,27 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
+            
             Console.SetWindowSize(80, 51);
             ChooseCharacter chooseCharacter = new ChooseCharacter();
             Ending ending = new Ending();
             Title title = new Title();
             Field myfield = new Field();
             Ranking ranking = new Ranking();
+            Clear clear = new Clear();
             while (true) 
             {
-
             title.gameTitle();
             chooseCharacter.Select();
             myfield.Play();
+            if(Field.bossClear==true)
+                {
+
+            clear.ClearScreen();
+                }
             //ranking.RankBoard();
             }
-            Console.Clear();
             
-            Console.ReadLine();
         }
     }
 }

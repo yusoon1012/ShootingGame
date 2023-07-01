@@ -119,7 +119,9 @@ namespace ConsoleApp1
             bool clearEnemy = true;
             bool leftarmBreak=false;
             bool rightarmBreak=false;
-            
+
+            int randomPower = 0;
+            int randomBomb = 0;
             int bossBulletTimer = 0;
             int bossBulletCheck = 0;
 
@@ -143,7 +145,7 @@ namespace ConsoleApp1
 
             const int ENEMY_WING = 555;
 
-            int countEnemy = 0;
+            int countEnemy = 45;
             List<Bullet> playerBulletList = new List<Bullet>();
             List<Enemy> enemyList = new List<Enemy>();
             List<Bullet> enemyBulletList = new List<Bullet>();
@@ -363,14 +365,14 @@ namespace ConsoleApp1
                             }
                             else if (board[y, x] == BOSS_LEFT_ARM)
                             {
-                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                Console.ForegroundColor = ConsoleColor.Red;
                                 Console.Write("▩");
                                 Console.ResetColor();
                             }
                             else if (board[y, x] == BOSS_RIGHT_ARM)
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write("○");
+                                Console.Write("▩");
                                 Console.ResetColor();
                             }
                             else if (board[y, x] == ENEMY)
@@ -381,13 +383,15 @@ namespace ConsoleApp1
                             }
                             else if (board[y, x] == POWER)
                             {
-                                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                                Console.ForegroundColor = ConsoleColor.Magenta;
+                            Console.BackgroundColor= ConsoleColor.Cyan;
                                 Console.Write("Ｐ");
                                 Console.ResetColor();
                             }
                             else if (board[y, x] == BOMB)
                             {
-                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                Console.BackgroundColor= ConsoleColor.Magenta;
                                 Console.Write("Ｂ");
                                 Console.ResetColor();
                             }
@@ -470,7 +474,23 @@ namespace ConsoleApp1
                                 Console.Write("♥");
                                 Console.ResetColor();
                             }
-                            else if (board[y, x] == 0)
+                        //    else if(bossList.Count!=0&& y > 0 && y < 20 && x == 2 || bossList.Count != 0 && x == 28 && y > 0 && y < 20)
+                        //{
+                            
+                        //        Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                        //        Console.Write("▤");
+                        //        Console.ResetColor();
+
+                        //}
+
+                        //   else if (bossList.Count!=0&& y == 20 && x > 2 && x < 28)
+
+                        //    {
+                        //        Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                        //        Console.Write("▤");
+                        //        Console.ResetColor();
+                        //    }
+                        else if (board[y, x] == 0)
                             {
 
                                 Console.Write("  ");
@@ -676,7 +696,7 @@ namespace ConsoleApp1
                             itemTimer = System.Environment.TickCount;
                         }
                         currentTick = System.Environment.TickCount;
-                        if (currentTick - itemTimer <= 500)
+                        if (currentTick - itemTimer <= 100)
                         {
 
                         }
@@ -1078,7 +1098,7 @@ namespace ConsoleApp1
 
                                 }
                                 currentTick = System.Environment.TickCount;
-                                if (currentTick - powerTimer <= 300)
+                                if (currentTick - powerTimer <= 200)
                                 {
 
                                 }
@@ -1370,7 +1390,7 @@ namespace ConsoleApp1
                                 }
                             }
                         }
-                        if (unitType == J7W_SHINDEN && powerCount >= 1)
+                        if (unitType == J7W_SHINDEN && powerCount >= 1&&isBomb_Explode==false)
                         {
                             if (bullet.Y % 2 == 0)
                             {
@@ -1423,7 +1443,12 @@ namespace ConsoleApp1
                                 {
                                     if (powerList.Count == 0)
                                     {
+                                     randomPower=rnd.Next(1, 100);
+                                    if(randomPower < 20)
+                                    {
                                         powerList.Add(new PowerUP(enemy.enemyPos_X, enemy.enemyPos_Y + 1));
+
+                                    }
 
                                     }
                                     //if (bombList.Count == 0)
@@ -1433,10 +1458,15 @@ namespace ConsoleApp1
                                     //}
                                 for (int k = 0; k < enemyList.Count; k++)
                                 {
-                                    if (k != j && bombList.Count == 0&&enemyList[k].enemyHp<=0)
+                                    if ( bombList.Count == 0&&enemyList[k].enemyHp<=0)
                                     {
+                                        randomBomb=rnd.Next(1, 100);
+                                        if (randomBomb<10)
+                                        {
                                         bombList.Add(new Bomb(enemyList[k].enemyPos_X, enemyList[k].enemyPos_Y + 2));
-                                        break; // Generate bomb for only one enemy
+
+                                        }
+                                        break; 
                                     }
                                 }
                                 enemyList.RemoveAt(j);
@@ -1521,15 +1551,34 @@ namespace ConsoleApp1
                         {
                             for (int x = BOSS_L_ARM_X_L; x < BOSS_L_ARM_X_R; x++)
                             {
+                            if(y<BOSS_L_ARM_Y_T + 2)
+                            {
+
+                            bossL_armList.Add(new Boss(x, y));
+                            }
+
+                            if (x>BOSS_L_ARM_X_L&&x<BOSS_L_ARM_X_R-1&&y>BOSS_L_ARM_Y_T+1)
+                            {
+
                                 bossL_armList.Add(new Boss(x, y));
+                            }
                             }
                         }
                         for (int y = BOSS_R_ARM_Y_T; y < BOSS_R_ARM_Y_B; y++)
                         {
                             for (int x = BOSS_R_ARM_X_L; x < BOSS_R_ARM_X_R; x++)
                             {
+                            if(y<BOSS_R_ARM_Y_T+2)
+                            {
                                 bossR_armList.Add(new Boss(x, y));
+
                             }
+                            if(x>BOSS_R_ARM_X_L&&x< BOSS_R_ARM_X_R-1&&y> BOSS_R_ARM_Y_T+1)
+                            {
+                                bossR_armList.Add(new Boss(x, y));
+
+                            }
+                        }
                         }
                         bossOn = false;
 
@@ -1920,6 +1969,7 @@ namespace ConsoleApp1
                                     }
                                     if (isBomb_Explode == true && bombCount > 0 && unitType == P_38)
                                     {
+                                    playerBulletList.Clear();
                                     bombCount -= 1;
                                         if (pos_X > 5 && pos_Y > 5)
                                         {
