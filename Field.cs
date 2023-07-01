@@ -145,7 +145,7 @@ namespace ConsoleApp1
 
             const int ENEMY_WING = 555;
 
-            int countEnemy = 45;
+            int countEnemy = 0;
             List<Bullet> playerBulletList = new List<Bullet>();
             List<Enemy> enemyList = new List<Enemy>();
             List<Bullet> enemyBulletList = new List<Bullet>();
